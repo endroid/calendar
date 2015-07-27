@@ -37,10 +37,6 @@ $calendar = $reader->readFromUrl($url);
 $events = $calendar->getEvents();
 ```
 
-## Symfony
-
-You can use [`EndroidCalendarBundle`](https://github.com/endroid/EndroidCalendarBundle) to integrate this service in your Symfony application.
-
 ## Versioning
 
 Semantic versioning ([semver](http://semver.org/)) is applied as much as possible.
