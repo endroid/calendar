@@ -62,15 +62,12 @@ class IcalReader
      */
     public function parseCalendarData($calendarData)
     {
-        dump($calendarData);
-
         $calendar = new Calendar();
         $calendar->setTitle($this->getValue('X-WR-CALNAME', $calendarData));
 
         preg_match_all('#BEGIN:VEVENT.*?END:VEVENT#s', $calendarData, $matches);
 
         $calendarItemDataArray = $matches[0];
-        dump($calendarItemDataArray);
         foreach ($calendarItemDataArray as $calendarItemData) {
             $calendarItem = $this->parseCalendarItemData($calendarItemData);
             $calendar->addCalendarItem($calendarItem);
