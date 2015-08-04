@@ -14,6 +14,7 @@ use DateTime;
 use DateTimeZone;
 use Endroid\Calendar\Entity\Calendar;
 use Endroid\Calendar\Entity\CalendarItem;
+use Endroid\Calendar\Exception\InvalidUrlException;
 
 class IcalReader
 {
@@ -21,10 +22,15 @@ class IcalReader
      * @param string $url
      *
      * @return Calendar
+     * @throws InvalidUrlException
      */
     public function readFromUrl($url)
     {
-        $calendarData = file_get_contents($url);
+        $calendarData = @file_get_contents($url);
+
+        if (!$calendarData) {
+            throw new InvalidUrlException();
+        }
 
         return $this->readFromString($calendarData);
     }
