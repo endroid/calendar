@@ -292,7 +292,7 @@ class CalendarItem
      */
     public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null)
     {
-        $events = [];
+        $events = array();
 
         if ($dateStart === null) {
             $dateStart = new DateTime();
