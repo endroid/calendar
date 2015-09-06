@@ -11,6 +11,7 @@ namespace Endroid\Calendar\Entity;
 
 use DateTime;
 use DateInterval;
+use Symfony\Component\Validator\Constraints\Date;
 
 class CalendarItem
 {
@@ -45,6 +46,11 @@ class CalendarItem
     protected $repeatInterval;
 
     /**
+     * @var array
+     */
+    protected $repeatDays;
+
+    /**
      * @var DateTime[]
      */
     protected $repeatExceptions;
@@ -53,6 +59,15 @@ class CalendarItem
      * @var Calendar
      */
     protected $calendar;
+
+    /**
+     * Creates a new instance.
+     */
+    public function __construct()
+    {
+        $this->repeatDays = array();
+        $this->repeatExceptions = array();
+    }
 
     /**
      * Sets the ID.
@@ -199,6 +214,30 @@ class CalendarItem
     }
 
     /**
+     * Sets the repeat days.
+     *
+     * @param array $repeatDays
+     *
+     * @return $this
+     */
+    public function setRepeatDays(array $repeatDays)
+    {
+        $this->repeatDays = $repeatDays;
+
+        return $this;
+    }
+
+    /**
+     * Returns the repeat days.
+     *
+     * @return array
+     */
+    public function getRepeatDays()
+    {
+        return $this->repeatDays;
+    }
+
+    /**
      * Sets the repeat exceptions.
      *
      * @param DateTime[] $repeatExceptions
@@ -303,21 +342,47 @@ class CalendarItem
             $dateEnd->add(new DateInterval('P1Y'));
         }
 
-        $eventDateStart = clone $this->dateStart;
-        $eventDateEnd = clone $this->dateEnd;
+        $repeatDates = $this->getRepeatDates();
 
-        while ($eventDateStart <= $dateEnd) {
-            if ($eventDateStart <= $dateEnd && $eventDateEnd >= $dateStart && !$this->isRepeatException($eventDateStart)) {
-                $events[] = $this->createEvent(clone $eventDateStart, clone $eventDateEnd);
+        while (true) {
+            /** @var DateTime[] $repeatDate */
+            foreach ($repeatDates as $repeatDate) {
+                if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
+                    $events[] = $this->createEvent(clone $repeatDate['start'], clone $repeatDate['end']);
+                }
+                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd) {
+                    break 2;
+                }
+                $repeatDate['start']->add($this->repeatInterval);
+                $repeatDate['end']->add($this->repeatInterval);
             }
-            if ($this->repeatInterval === null) {
-                break;
-            }
-            $eventDateStart->add($this->repeatInterval);
-            $eventDateEnd->add($this->repeatInterval);
         }
 
         return $events;
+    }
+
+    /**
+     * Returns the repeat dates.
+     *
+     * @return DateTime[]
+     */
+    public function getRepeatDates()
+    {
+        $repeatDateStart = clone $this->getDateStart();
+        $repeatDateEnd = clone $this->getDateEnd();
+        $repeatDates = array(array('start' => clone $repeatDateStart, 'end' => clone $repeatDateEnd));
+        $repeatDays = $this->getRepeatDays();
+
+        $dayInterval = new DateInterval('P1D');
+        for ($i = 0; $i < 6; ++$i) {
+            $repeatDateStart->add($dayInterval);
+            $repeatDateEnd->add($dayInterval);
+            if (in_array($repeatDateStart->format('w'), $repeatDays)) {
+                $repeatDates[] = array('start' => clone $repeatDateStart, 'end' => clone $repeatDateEnd);
+            }
+        }
+
+        return $repeatDates;
     }
 
     /**

@@ -19,9 +19,15 @@ use Endroid\Calendar\Exception\InvalidUrlException;
 class IcalReader
 {
     /**
+     * @var array
+     */
+    protected $weekDays = array('MO' => 1, 'TU' => 2, 'WE' => 3, 'TH' => 4, 'FR' => 5, 'SA' => 6, 'SU' => 7);
+
+    /**
      * @param string $url
      *
      * @return Calendar
+     *
      * @throws InvalidUrlException
      */
     public function readFromUrl($url)
@@ -95,113 +101,170 @@ class IcalReader
         $calendarItem->setId($this->getValue('UID', $calendarItemData));
         $calendarItem->setTitle($this->getValue('SUMMARY', $calendarItemData));
         $calendarItem->setDescription($this->getValue('DESCRIPTION', $calendarItemData));
-        $calendarItem->setDateStart($this->getValue('DTSTART', $calendarItemData));
-        $calendarItem->setDateEnd($this->getValue('DTEND', $calendarItemData));
-        $calendarItem->setRepeatInterval($this->getValue('RRULE', $calendarItemData));
-        $calendarItem->setRepeatExceptions($this->getValues('EXDATE', $calendarItemData));
+        $calendarItem->setDateStart($this->getDate('DTSTART', $calendarItemData));
+        $calendarItem->setDateEnd($this->getDate('DTEND', $calendarItemData));
+
+        $this->setRepeatRule($calendarItemData, $calendarItem);
 
         return $calendarItem;
     }
 
     /**
-     * Returns the value for a specific key.
+     * Sets the calendar item repeat rules.
      *
-     * @param string $name
-     * @param string $calendarData
+     * @param $calendarItemData
+     * @param CalendarItem $calendarItem
+     */
+    protected function setRepeatRule($calendarItemData, CalendarItem $calendarItem)
+    {
+        $data = $this->getData('RRULE', $calendarItemData);
+
+        if (count($data) == 0) {
+            return;
+        }
+
+        $calendarItem->setRepeatInterval($this->getRepeatInterval($data[0]));
+        $calendarItem->setRepeatDays($this->getRepeatDays($data[0]));
+        $this->setRepeatExceptions($calendarItemData, $calendarItem);
+    }
+
+    /**
+     * Sets the calendar repeat exceptions.
+     *
+     * @param $calendarItemData
+     * @param CalendarItem $calendarItem
+     */
+    protected function setRepeatExceptions($calendarItemData, CalendarItem $calendarItem)
+    {
+        $data = $this->getData('EXDATE', $calendarItemData);
+
+        foreach ($data as $line) {
+            $date = $this->createDate($line);
+            $calendarItem->addRepeatException($date);
+        }
+    }
+
+    /**
+     * Returns the parsed data for a specific key.
+     *
+     * @param $name
+     * @param $calendarData
+     *
+     * @return array
+     */
+    protected function getData($name, $calendarData)
+    {
+        $data = array();
+
+        $pattern = '#('.$name.'([^:]*)):([^\\r\\n]*)#';
+        preg_match_all($pattern, $calendarData, $matches);
+
+        for ($i = 0; $i < count($matches[0]); ++$i) {
+            $line = array();
+            $values = array_merge(explode(';', trim($matches[2][$i], ';')), explode(';', $matches[3][$i]));
+            foreach ($values as $value) {
+                if (strpos($value, '=') !== false) {
+                    $parts = explode('=', $value);
+                    $line['extra'][$parts[0]] = $parts[1];
+                } else {
+                    $line['value'] = $value;
+                }
+            }
+            $data[] = $line;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns a value.
+     *
+     * @param $name
+     * @param $calendarData
      *
      * @return mixed
      */
     protected function getValue($name, $calendarData)
     {
-        $values = $this->getValues($name, $calendarData);
+        $data = $this->getData($name, $calendarData);
 
-        return isset($values[0]) ? $values[0] : null;
+        return $data[0]['value'];
     }
 
     /**
-     * Returns the values for a specific key.
+     * Returns a date.
      *
-     * @param string $name
-     * @param string $calendarData
-     *
-     * @return array
-     */
-    protected function getValues($name, $calendarData)
-    {
-        $values = array();
-
-        $pattern = '#('.$name.'[^:]*):([^\\r\\n]*)#';
-        preg_match_all($pattern, $calendarData, $matches);
-
-        for ($i = 0; $i < count($matches[0]); ++$i) {
-            $key = $matches[1][$i];
-            $value = $matches[2][$i];
-            switch ($name) {
-                case 'DTSTART':
-                case 'DTEND':
-                case 'EXDATE':
-                    $value = $this->convertToDate($key, $value);
-                    break;
-                case 'RRULE':
-                    $value = $this->convertToDateInterval($value);
-                    break;
-            }
-            $values[] = $value;
-        }
-
-        return $values;
-    }
-
-    /**
-     * Converts the value to a date.
-     *
-     * @param string $key
-     * @param string $value
+     * @param $name
+     * @param $calendarData
      *
      * @return DateTime
      */
-    protected function convertToDate($key, $value)
+    protected function getDate($name, $calendarData)
     {
-        preg_match('#TZID=([^;]+)#', $key, $timeZone);
-        $timeZone = isset($timeZone[1]) ? new DateTimeZone($timeZone[1]) : null;
-
-        $date = new DateTime($value, $timeZone);
+        $data = $this->getData($name, $calendarData);
+        $date = $this->createDate($data[0]);
 
         return $date;
     }
 
     /**
-     * Converts the given value to a date interval.
+     * Returns the repeat interval.
      *
-     * @param string $value
+     * @param array $data
      *
      * @return DateInterval
      */
-    protected function convertToDateInterval($value)
+    protected function getRepeatInterval(array $data)
     {
-        $dateInterval = null;
-
-        preg_match('#FREQ=([A-Z]+)#', $value, $freq);
-        $freq = isset($freq[1]) ? $freq[1] : 'NONE';
-
-        preg_match('#INTERVAL=([0-9]+)#', $value, $interval);
-        $interval = isset($interval[1]) ? $interval[1] : 1;
-
-        switch ($freq) {
-            case 'DAILY':
-                $dateInterval = new DateInterval('P'.$interval.'D');
-                break;
-            case 'WEEKLY':
-                $dateInterval = new DateInterval('P'.($interval * 7).'D');
-                break;
-            case 'MONTHLY':
-                $dateInterval = new DateInterval('P'.$interval.'M');
-                break;
-            case 'YEARLY':
-                $dateInterval = new DateInterval('P'.$interval.'Y');
-                break;
+        if (!isset($data['extra']['FREQ'])) {
+            return;
         }
 
+        $frequency = substr($data['extra']['FREQ'], 0, 1);
+        $interval = isset($data['extra']['INTERVAL']) ? $data['extra']['INTERVAL'] : 1;
+
+        if ($frequency == 'W') {
+            $frequency = 'D';
+            $interval *= 7;
+        }
+
+        $dateInterval = new DateInterval('P'.$interval.$frequency);
+
         return $dateInterval;
+    }
+
+    /**
+     * Returns the days by which to repeat.
+     *
+     * @param array $data
+     *
+     * @return array
+     */
+    protected function getRepeatDays(array $data)
+    {
+        if (!isset($data['extra']['BYDAY'])) {
+            return array();
+        }
+
+        $days = explode(',', $data['extra']['BYDAY']);
+        foreach ($days as &$day) {
+            $day = $this->weekDays[$day];
+        }
+
+        return $days;
+    }
+
+    /**
+     * Creates a date.
+     *
+     * @param $data
+     *
+     * @return DateTime
+     */
+    protected function createDate($data)
+    {
+        $date = new DateTime($data['value'], isset($data['extra']['TZID']) ? new DateTimeZone($data['extra']['TZID']) : null);
+
+        return $date;
     }
 }
