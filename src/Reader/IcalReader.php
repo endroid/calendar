@@ -125,6 +125,7 @@ class IcalReader
 
         $calendarItem->setRepeatInterval($this->getRepeatInterval($data[0]));
         $calendarItem->setRepeatDays($this->getRepeatDays($data[0]));
+        $calendarItem->setRepeatCount($this->getRepeatCount($data[0]));
         $this->setRepeatExceptions($calendarItemData, $calendarItem);
     }
 
@@ -252,6 +253,24 @@ class IcalReader
         }
 
         return $days;
+    }
+
+    /**
+     * Returns the repeat count.
+     *
+     * @param array $data
+     *
+     * @return int
+     */
+    protected function getRepeatCount(array $data)
+    {
+        if (!isset($data['extra']['COUNT'])) {
+            return 0;
+        }
+
+        $repeatCount = (int) $data['extra']['COUNT'];
+
+        return $repeatCount;
     }
 
     /**

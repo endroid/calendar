@@ -56,6 +56,11 @@ class CalendarItem
     protected $repeatExceptions;
 
     /**
+     * @var int
+     */
+    protected $repeatCount;
+
+    /**
      * @var Calendar
      */
     protected $calendar;
@@ -67,6 +72,8 @@ class CalendarItem
     {
         $this->repeatDays = array();
         $this->repeatExceptions = array();
+
+        $this->repeatCount = 0;
     }
 
     /**
@@ -294,6 +301,30 @@ class CalendarItem
     }
 
     /**
+     * Sets the repeat count.
+     *
+     * @param $repeatCount
+     *
+     * @return $this
+     */
+    public function setRepeatCount($repeatCount)
+    {
+        $this->repeatCount = $repeatCount;
+
+        return $this;
+    }
+
+    /**
+     * Returns the repeat count.
+     *
+     * @return int
+     */
+    public function getRepeatCount()
+    {
+        return $this->repeatCount;
+    }
+
+    /**
      * Sets the calendar.
      *
      * @param Calendar $calendar
@@ -350,7 +381,7 @@ class CalendarItem
                 if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
                     $events[] = $this->createEvent(clone $repeatDate['start'], clone $repeatDate['end']);
                 }
-                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd) {
+                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd || ($this->repeatCount > 0 && count($events) == $this->repeatCount)) {
                     break 2;
                 }
                 $repeatDate['start']->add($this->repeatInterval);
