@@ -10,6 +10,7 @@
 namespace Endroid\Calendar\Entity;
 
 use DateTime;
+use DateTimeZone;
 
 class Event
 {
@@ -98,10 +99,18 @@ class Event
     /**
      * Returns the start date.
      *
+     * @param DateTimeZone $timeZone
+     *
      * @return DateTime
      */
-    public function getDateStart()
+    public function getDateStart(DateTimeZone $timeZone = null)
     {
+        if ($timeZone == null) {
+            $timeZone = new DateTimeZone(date_default_timezone_get());
+        }
+
+        $this->dateStart->setTimeZone($timeZone);
+
         return $this->dateStart;
     }
 
@@ -122,10 +131,18 @@ class Event
     /**
      * Returns the end date.
      *
+     * @param DateTimeZone $timeZone
+     *
      * @return DateTime
      */
-    public function getDateEnd()
+    public function getDateEnd(DateTimeZone $timeZone = null)
     {
+        if ($timeZone == null) {
+            $timeZone = new DateTimeZone(date_default_timezone_get());
+        }
+
+        $this->dateEnd->setTimeZone($timeZone);
+
         return $this->dateEnd;
     }
 }

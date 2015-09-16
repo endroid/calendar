@@ -282,7 +282,8 @@ class IcalReader
      */
     protected function createDate($data)
     {
-        $date = new DateTime($data['value'], isset($data['extra']['TZID']) ? new DateTimeZone($data['extra']['TZID']) : null);
+        $zone = new DateTimeZone(isset($data['extra']['TZID']) ? $data['extra']['TZID'] : 'UTC');
+        $date = new DateTime($data['value'], $zone);
 
         return $date;
     }
