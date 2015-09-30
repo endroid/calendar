@@ -375,13 +375,13 @@ class CalendarItem
 
         $repeatDates = $this->getRepeatDates();
 
-        while (true) {
+        for ($count = 0; true; $count++) {
             /** @var DateTime[] $repeatDate */
             foreach ($repeatDates as $repeatDate) {
                 if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
                     $events[] = $this->createEvent(clone $repeatDate['start'], clone $repeatDate['end']);
                 }
-                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd || ($this->repeatCount > 0 && count($events) == $this->repeatCount)) {
+                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd || ($this->repeatCount > 0 && $count >= $this->repeatCount)) {
                     break 2;
                 }
                 $repeatDate['start']->add($this->repeatInterval);
