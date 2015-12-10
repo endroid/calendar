@@ -241,7 +241,7 @@ class CalendarItem
      */
     public function getRepeatDays()
     {
-        return $this->repeatDays;
+        return (array) $this->repeatDays;
     }
 
     /**
