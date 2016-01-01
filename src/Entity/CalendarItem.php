@@ -375,7 +375,7 @@ class CalendarItem
 
         $repeatDates = $this->getRepeatDates();
 
-        for ($count = 0; true; $count++) {
+        for ($count = 0; true; ++$count) {
             /** @var DateTime[] $repeatDate */
             foreach ($repeatDates as $repeatDate) {
                 if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
