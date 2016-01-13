@@ -66,6 +66,11 @@ class CalendarItem
     protected $calendar;
 
     /**
+     * @var DateTime
+     */
+    protected $originalDate;
+
+    /**
      * Creates a new instance.
      */
     public function __construct()
@@ -353,6 +358,30 @@ class CalendarItem
     }
 
     /**
+     * Sets the original date.
+     *
+     * @param DateTime $originalDate
+     *
+     * @return $this
+     */
+    public function setOriginalDate(DateTime $originalDate)
+    {
+        $this->originalDate = $originalDate;
+
+        return $this;
+    }
+
+    /**
+     * Returns the original date.
+     *
+     * @return DateTime
+     */
+    public function getOriginalDate()
+    {
+        return $this->originalDate;
+    }
+
+    /**
      * Returns all events that match the criteria given.
      *
      * @param DateTime $dateStart
@@ -376,12 +405,15 @@ class CalendarItem
         $repeatDates = $this->getRepeatDates();
 
         for ($count = 0; true; ++$count) {
+            if ($this->repeatCount > 0 && $count >= $this->repeatCount) {
+                break;
+            }
             /** @var DateTime[] $repeatDate */
             foreach ($repeatDates as $repeatDate) {
                 if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
                     $events[] = $this->createEvent(clone $repeatDate['start'], clone $repeatDate['end']);
                 }
-                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd || ($this->repeatCount > 0 && $count >= $this->repeatCount)) {
+                if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd) {
                     break 2;
                 }
                 $repeatDate['start']->add($this->repeatInterval);

@@ -85,6 +85,8 @@ class IcalReader
             $calendar->addCalendarItem($calendarItem);
         }
 
+        $this->processRevisions($calendar->getCalendarItems());
+
         return $calendar;
     }
 
@@ -105,6 +107,7 @@ class IcalReader
         $calendarItem->setDateEnd($this->getDate('DTEND', $calendarItemData));
 
         $this->setRepeatRule($calendarItemData, $calendarItem);
+        $this->setOriginalDate($calendarItemData, $calendarItem);
 
         return $calendarItem;
     }
@@ -146,6 +149,24 @@ class IcalReader
     }
 
     /**
+     * Set the original date in case of a revision.
+     *
+     * @param $calendarItemData
+     * @param CalendarItem $calendarItem
+     */
+    protected function setOriginalDate($calendarItemData, CalendarItem $calendarItem)
+    {
+        $data = $this->getData('RECURRENCE-ID', $calendarItemData);
+
+        if (count($data) == 0) {
+            return;
+        }
+
+        $date = $this->createDate($data[0]);
+        $calendarItem->setOriginalDate($date);
+    }
+
+    /**
      * Returns the parsed data for a specific key.
      *
      * @param $name
@@ -157,7 +178,7 @@ class IcalReader
     {
         $data = array();
 
-        $pattern = '#('.$name.'([^:]*)):([^\\r\\n]*)#';
+        $pattern = '#('.preg_quote($name, '#').'([^:]*)):([^\\r\\n]*)#';
         preg_match_all($pattern, $calendarData, $matches);
 
         for ($i = 0; $i < count($matches[0]); ++$i) {
@@ -286,5 +307,36 @@ class IcalReader
         $date = new DateTime($data['value'], $zone);
 
         return $date;
+    }
+
+    /**
+     * Process revisions. Adds revisions as exceptions to
+     * the original calendar item.
+     *
+     * @param CalendarItem[] $calendarItems
+     */
+    protected function processRevisions(array $calendarItems)
+    {
+        /** @var DateTime[] $revisedDates */
+        $revisedDates = array();
+
+        /** @var CalendarItem[] $originalCalendarItems */
+        $originalCalendarItems = array();
+
+        foreach ($calendarItems as $calendarItem) {
+            if ($calendarItem->getOriginalDate()) {
+                $revisedDates[$calendarItem->getId()][] = $calendarItem->getOriginalDate();
+            } else {
+                $originalCalendarItems[$calendarItem->getId()] = $calendarItem;
+            }
+        }
+
+        foreach ($originalCalendarItems as $calendarItem) {
+            if (isset($revisedDates[$calendarItem->getId()])) {
+                foreach ($revisedDates[$calendarItem->getId()] as $date) {
+                    $calendarItem->addRepeatException($date);
+                }
+            }
+        }
     }
 }
