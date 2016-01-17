@@ -36,7 +36,7 @@ class IcalReaderTest extends PHPUnit_Framework_TestCase
      * Returns the calendar used for testing.
      * - item repeats 10 days in a row, starting from 13-01-2016
      * - item on 14-01 was moved to 15-01 with changed time
-     * - item on 17-01 was removed
+     * - item on 17-01 was removed.
      *
      * @return Calendar
      */
