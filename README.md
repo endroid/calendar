@@ -27,6 +27,7 @@ $ composer require endroid/calendar
 ```php
 <?php
 
+use DateTime;
 use Endroid\Calendar\Reader\IcalReader;
 
 $url = '...';
