@@ -34,7 +34,10 @@ $url = '...';
 $reader = new IcalReader();
 $calendar = $reader->readFromUrl($url);
 
-$events = $calendar->getEvents();
+$dateStart = new DateTime('2016-01-01');
+$dateEnd = new DateTime('2016-12-31');
+
+$events = $calendar->getEvents($dateStart, $dateEnd);
 ```
 
 ## Versioning
