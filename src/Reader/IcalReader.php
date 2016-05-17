@@ -129,6 +129,7 @@ class IcalReader
         $calendarItem->setRepeatInterval($this->getRepeatInterval($data[0]));
         $calendarItem->setRepeatDays($this->getRepeatDays($data[0]));
         $calendarItem->setRepeatCount($this->getRepeatCount($data[0]));
+        $calendarItem->setRepeatEndDate($this->getRepeatEndDate($data[0]));
         $this->setRepeatExceptions($calendarItemData, $calendarItem);
     }
 
@@ -292,6 +293,24 @@ class IcalReader
         $repeatCount = (int) $data['extra']['COUNT'];
 
         return $repeatCount;
+    }
+
+    /**
+     * Returns the date the repeat rule stops.
+     *
+     * @param array $data
+     *
+     * @return DateTime
+     */
+    protected function getRepeatEndDate(array $data)
+    {
+        if (!isset($data['extra']['UNTIL'])) {
+            return null;
+        }
+
+        $repeatEndDate = new DateTime($data['extra']['UNTIL']);
+
+        return $repeatEndDate;
     }
 
     /**
