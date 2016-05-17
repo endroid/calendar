@@ -61,6 +61,11 @@ class CalendarItem
     protected $repeatCount;
 
     /**
+     * @var DateTime
+     */
+    protected $repeatEndDate;
+
+    /**
      * @var Calendar
      */
     protected $calendar;
@@ -330,6 +335,30 @@ class CalendarItem
     }
 
     /**
+     * Sets the repeat end date.
+     *
+     * @param DateTime $repeatEndDate
+     *
+     * @return $this;
+     */
+    public function setRepeatEndDate($repeatEndDate)
+    {
+        $this->repeatEndDate = $repeatEndDate;
+
+        return $this;
+    }
+
+    /**
+     * Returns the repeat end date.
+     *
+     * @return DateTime;
+     */
+    public function getRepeatEndDate()
+    {
+        return $this->repeatEndDate;
+    }
+
+    /**
      * Sets the calendar.
      *
      * @param Calendar $calendar
@@ -400,6 +429,10 @@ class CalendarItem
         if ($dateEnd === null) {
             $dateEnd = clone $dateStart;
             $dateEnd->add(new DateInterval('P1Y'));
+        }
+
+        if (($this->repeatEndDate !== null) && ($this->repeatEndDate < $dateEnd)) {
+        	$dateEnd = $this->repeatEndDate;
         }
 
         $repeatDates = $this->getRepeatDates();
