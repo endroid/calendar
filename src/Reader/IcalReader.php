@@ -305,7 +305,7 @@ class IcalReader
     protected function getRepeatEndDate(array $data)
     {
         if (!isset($data['extra']['UNTIL'])) {
-            return null;
+            return;
         }
 
         $repeatEndDate = new DateTime($data['extra']['UNTIL']);

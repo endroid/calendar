@@ -432,7 +432,7 @@ class CalendarItem
         }
 
         if (($this->repeatEndDate !== null) && ($this->repeatEndDate < $dateEnd)) {
-        	$dateEnd = $this->repeatEndDate;
+            $dateEnd = $this->repeatEndDate;
         }
 
         $repeatDates = $this->getRepeatDates();
