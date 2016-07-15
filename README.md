@@ -6,6 +6,7 @@ Calendar
 [![Latest Stable Version](http://img.shields.io/packagist/v/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
 [![Build Status](http://img.shields.io/travis/endroid/Calendar.svg)](http://travis-ci.org/endroid/Calendar)
 [![Total Downloads](http://img.shields.io/packagist/dt/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
+[![Total Downloads](http://img.shields.io/packagist/dm/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
 [![License](http://img.shields.io/packagist/l/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
 
 This library helps reading and writing calendars from and to different formats. To this
@@ -43,9 +44,9 @@ $events = $calendar->getEvents($dateStart, $dateEnd);
 
 ## Versioning
 
-Version numbers follow the MAJOR.MINOR.PATCH scheme. Backwards compatible
-changes will be kept to a minimum but be aware that these can occur. Lock
-your dependencies for production and test your code when upgrading.
+Version numbers follow the MAJOR.MINOR.PATCH scheme. Backwards compatibility
+breaking changes will be kept to a minimum but be aware that these can occur.
+Lock your dependencies for production and test your code when upgrading.
 
 ## License
 
