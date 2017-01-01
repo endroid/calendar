@@ -21,7 +21,7 @@ class IcalReader
     /**
      * @var array
      */
-    protected $weekDays = array('MO' => 1, 'TU' => 2, 'WE' => 3, 'TH' => 4, 'FR' => 5, 'SA' => 6, 'SU' => 7);
+    protected $weekDays = ['MO' => 1, 'TU' => 2, 'WE' => 3, 'TH' => 4, 'FR' => 5, 'SA' => 6, 'SU' => 7];
 
     /**
      * @param string $url
@@ -177,13 +177,13 @@ class IcalReader
      */
     protected function getData($name, $calendarData)
     {
-        $data = array();
+        $data = [];
 
         $pattern = '#('.preg_quote($name, '#').'([^:]*)):([^\\r\\n]*)#';
         preg_match_all($pattern, $calendarData, $matches);
 
         for ($i = 0; $i < count($matches[0]); ++$i) {
-            $line = array();
+            $line = [];
             $values = array_merge(explode(';', trim($matches[2][$i], ';')), explode(';', $matches[3][$i]));
             foreach ($values as $value) {
                 if (strpos($value, '=') !== false) {
@@ -266,7 +266,7 @@ class IcalReader
     protected function getRepeatDays(array $data)
     {
         if (!isset($data['extra']['BYDAY'])) {
-            return array();
+            return [];
         }
 
         $days = explode(',', $data['extra']['BYDAY']);
@@ -337,10 +337,10 @@ class IcalReader
     protected function processRevisions(array $calendarItems)
     {
         /** @var DateTime[] $revisedDates */
-        $revisedDates = array();
+        $revisedDates = [];
 
         /** @var CalendarItem[] $originalCalendarItems */
-        $originalCalendarItems = array();
+        $originalCalendarItems = [];
 
         foreach ($calendarItems as $calendarItem) {
             if ($calendarItem->getOriginalDate()) {

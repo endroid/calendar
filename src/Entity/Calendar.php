@@ -33,7 +33,7 @@ class Calendar
      */
     public function __construct()
     {
-        $this->calendarItems = array();
+        $this->calendarItems = [];
     }
 
     /**
@@ -120,13 +120,13 @@ class Calendar
      */
     public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null)
     {
-        $events = array();
+        $events = [];
 
         foreach ($this->calendarItems as $calendarItem) {
             $events = array_merge($events, $calendarItem->getEvents($dateStart, $dateEnd));
         }
 
-        usort($events, array($this, 'dateCompare'));
+        usort($events, [$this, 'dateCompare']);
 
         return $events;
     }
