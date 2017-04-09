@@ -211,7 +211,7 @@ class IcalReader
     {
         $data = $this->getData($name, $calendarData);
 
-        return $data[0]['value'];
+        return count($data) ? $data[0]['value'] : null;
     }
 
     /**

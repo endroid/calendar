@@ -39,7 +39,7 @@ class Event
      *
      * @param $title
      *
-     * @return Calendar
+     * @return $this
      */
     public function setTitle($title)
     {

@@ -87,10 +87,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the ID.
-     *
      * @param string $id
-     *
      * @return $this
      */
     public function setId($id)
@@ -101,8 +98,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the ID.
-     *
      * @return string
      */
     public function getId()
@@ -111,11 +106,8 @@ class CalendarItem
     }
 
     /**
-     * Sets the title.
-     *
      * @param $title
-     *
-     * @return Calendar
+     * @return $this
      */
     public function setTitle($title)
     {
@@ -125,8 +117,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the title.
-     *
      * @return string
      */
     public function getTitle()
@@ -135,10 +125,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the description.
-     *
      * @param string $description
-     *
      * @return $this
      */
     public function setDescription($description)
@@ -149,8 +136,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the description.
-     *
      * @return string
      */
     public function getDescription()
@@ -159,10 +144,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the start date.
-     *
      * @param DateTime $dateStart
-     *
      * @return $this
      */
     public function setDateStart(DateTime $dateStart)
@@ -173,8 +155,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the start date.
-     *
      * @return DateTime
      */
     public function getDateStart()
@@ -183,10 +163,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the end date.
-     *
      * @param DateTime $dateEnd
-     *
      * @return $this
      */
     public function setDateEnd(DateTime $dateEnd)
@@ -197,8 +174,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the end date.
-     *
      * @return DateTime
      */
     public function getDateEnd()
@@ -207,10 +182,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the repeat interval.
-     *
      * @param DateInterval $repeatInterval
-     *
      * @return $this
      */
     public function setRepeatInterval(DateInterval $repeatInterval = null)
@@ -221,8 +193,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the repeat interval.
-     *
      * @return DateInterval
      */
     public function getRepeatInterval()
@@ -231,10 +201,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the repeat days.
-     *
      * @param array $repeatDays
-     *
      * @return $this
      */
     public function setRepeatDays(array $repeatDays)
@@ -245,8 +212,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the repeat days.
-     *
      * @return array
      */
     public function getRepeatDays()
@@ -255,10 +220,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the repeat exceptions.
-     *
      * @param DateTime[] $repeatExceptions
-     *
      * @return $this
      */
     public function setRepeatExceptions(array $repeatExceptions)
@@ -269,10 +231,7 @@ class CalendarItem
     }
 
     /**
-     * Adds a repeat exception.
-     *
      * @param DateTime $repeatException
-     *
      * @return $this
      */
     public function addRepeatException(DateTime $repeatException)
@@ -283,10 +242,7 @@ class CalendarItem
     }
 
     /**
-     * Checks if the given date is a repeat exception.
-     *
      * @param DateTime $date
-     *
      * @return bool
      */
     public function isRepeatException(DateTime $date)
@@ -301,8 +257,6 @@ class CalendarItem
     }
 
     /**
-     * Returns all repeat exceptions.
-     *
      * @return DateTime[]
      */
     public function getRepeatExceptions()
@@ -311,10 +265,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the repeat count.
-     *
      * @param $repeatCount
-     *
      * @return $this
      */
     public function setRepeatCount($repeatCount)
@@ -325,8 +276,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the repeat count.
-     *
      * @return int
      */
     public function getRepeatCount()
@@ -335,10 +284,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the repeat end date.
-     *
      * @param DateTime $repeatEndDate
-     *
      * @return $this;
      */
     public function setRepeatEndDate($repeatEndDate)
@@ -349,9 +295,7 @@ class CalendarItem
     }
 
     /**
-     * Returns the repeat end date.
-     *
-     * @return DateTime;
+     * @return DateTime
      */
     public function getRepeatEndDate()
     {
@@ -359,10 +303,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the calendar.
-     *
      * @param Calendar $calendar
-     *
      * @return $this
      */
     public function setCalendar(Calendar $calendar)
@@ -377,8 +318,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the calendar.
-     *
      * @return Calendar
      */
     public function getCalendar()
@@ -387,10 +326,7 @@ class CalendarItem
     }
 
     /**
-     * Sets the original date.
-     *
      * @param DateTime $originalDate
-     *
      * @return $this
      */
     public function setOriginalDate(DateTime $originalDate)
@@ -401,8 +337,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the original date.
-     *
      * @return DateTime
      */
     public function getOriginalDate()
@@ -411,11 +345,8 @@ class CalendarItem
     }
 
     /**
-     * Returns all events that match the criteria given.
-     *
      * @param DateTime $dateStart
      * @param DateTime $dateEnd
-     *
      * @return Event[]
      */
     public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null)
@@ -458,8 +389,6 @@ class CalendarItem
     }
 
     /**
-     * Returns the repeat dates.
-     *
      * @return DateTime[]
      */
     public function getRepeatDates()
@@ -482,11 +411,8 @@ class CalendarItem
     }
 
     /**
-     * Creates an event corresponding to this calendar item.
-     *
      * @param DateTime $dateStart
      * @param DateTime $dateEnd
-     *
      * @return Event
      */
     protected function createEvent(DateTime $dateStart, DateTime $dateEnd)
