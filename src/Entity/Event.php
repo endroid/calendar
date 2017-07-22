@@ -145,4 +145,12 @@ class Event
 
         return $this->dateEnd;
     }
+
+    /**
+     * @return bool
+     */
+    public function isAllDay()
+    {
+        return $this->dateStart->format('H') === '00';
+    }
 }
