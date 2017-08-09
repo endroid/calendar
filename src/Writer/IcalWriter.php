@@ -9,6 +9,7 @@
 
 namespace Endroid\Calendar\Writer;
 
+use DateTimeZone;
 use Endroid\Calendar\Entity\Calendar;
 
 class IcalWriter
@@ -23,12 +24,17 @@ class IcalWriter
             'CALSCALE:GREGORIAN'
         ];
 
+        $dateTimeZoneUTC = new DateTimeZone('UTC');
+
         foreach ($calendar->getEvents() as $event) {
             $lines = array_merge($lines, [
                 'BEGIN:VEVENT',
                 'SUMMARY:'.$event->getTitle(),
                 'DESCRIPTION:'.$event->getDescription(),
             ]);
+
+            $event->getDateStart()->setTimezone($dateTimeZoneUTC);
+            $event->getDateEnd()->setTimezone($dateTimeZoneUTC);
 
             if ($event->isAllDay()) {
                 $lines = array_merge($lines, [
