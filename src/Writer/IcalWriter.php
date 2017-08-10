@@ -33,24 +33,24 @@ class IcalWriter
                 'DESCRIPTION:'.$event->getDescription(),
             ]);
 
-            $event->getDateStart()->setTimezone($dateTimeZoneUTC);
-            $event->getDateEnd()->setTimezone($dateTimeZoneUTC);
+            $dateStart = $event->getDateStart()->setTimezone($dateTimeZoneUTC);
+            $dateEnd = $event->getDateEnd()->setTimezone($dateTimeZoneUTC);
 
             if ($event->isAllDay()) {
                 $lines = array_merge($lines, [
-                    'DTSTART;VALUE=DATE:'.$event->getDateStart()->format('Ymd\THis\Z'),
-                    'DTEND;VALUE=DATE:'.$event->getDateEnd()->format('Ymd\THis\Z'),
+                    'DTSTART;VALUE=DATE:'.$dateStart->format('Ymd\THis\Z'),
+                    'DTEND;VALUE=DATE:'.$dateEnd->format('Ymd\THis\Z'),
                 ]);
             } else {
                 $lines = array_merge($lines, [
-                    'DTSTART:'.$event->getDateStart()->format('Ymd\THis\Z'),
-                    'DTEND:'.$event->getDateEnd()->format('Ymd\THis\Z'),
+                    'DTSTART:'.$dateStart->format('Ymd\THis\Z'),
+                    'DTEND:'.$dateEnd->format('Ymd\THis\Z'),
                 ]);
             }
 
             $lines = array_merge($lines, [
                 'UID:'.sha1($event->getTitle()), // @todo think of better generic method
-                'DTSTAMP:'.$event->getDateStart()->format('U'),
+                'DTSTAMP:'.$dateStart->format('U'),
                 'END:VEVENT'
             ]);
         }
