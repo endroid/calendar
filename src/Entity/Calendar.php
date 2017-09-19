@@ -148,7 +148,7 @@ class Calendar
 
         $diff = strcmp($dateStartA, $dateStartB);
 
-        if ($diff == 0) {
+        if (0 == $diff) {
             $diff = strcmp($dateEndA, $dateEndB);
         }
 

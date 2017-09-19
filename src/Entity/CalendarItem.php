@@ -11,7 +11,6 @@ namespace Endroid\Calendar\Entity;
 
 use DateTime;
 use DateInterval;
-use Symfony\Component\Validator\Constraints\Date;
 
 class CalendarItem
 {
@@ -88,6 +87,7 @@ class CalendarItem
 
     /**
      * @param string $id
+     *
      * @return $this
      */
     public function setId($id)
@@ -107,6 +107,7 @@ class CalendarItem
 
     /**
      * @param $title
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -126,6 +127,7 @@ class CalendarItem
 
     /**
      * @param string $description
+     *
      * @return $this
      */
     public function setDescription($description)
@@ -145,6 +147,7 @@ class CalendarItem
 
     /**
      * @param DateTime $dateStart
+     *
      * @return $this
      */
     public function setDateStart(DateTime $dateStart)
@@ -164,6 +167,7 @@ class CalendarItem
 
     /**
      * @param DateTime $dateEnd
+     *
      * @return $this
      */
     public function setDateEnd(DateTime $dateEnd)
@@ -183,6 +187,7 @@ class CalendarItem
 
     /**
      * @param DateInterval $repeatInterval
+     *
      * @return $this
      */
     public function setRepeatInterval(DateInterval $repeatInterval = null)
@@ -202,6 +207,7 @@ class CalendarItem
 
     /**
      * @param array $repeatDays
+     *
      * @return $this
      */
     public function setRepeatDays(array $repeatDays)
@@ -221,6 +227,7 @@ class CalendarItem
 
     /**
      * @param DateTime[] $repeatExceptions
+     *
      * @return $this
      */
     public function setRepeatExceptions(array $repeatExceptions)
@@ -232,6 +239,7 @@ class CalendarItem
 
     /**
      * @param DateTime $repeatException
+     *
      * @return $this
      */
     public function addRepeatException(DateTime $repeatException)
@@ -243,6 +251,7 @@ class CalendarItem
 
     /**
      * @param DateTime $date
+     *
      * @return bool
      */
     public function isRepeatException(DateTime $date)
@@ -266,6 +275,7 @@ class CalendarItem
 
     /**
      * @param $repeatCount
+     *
      * @return $this
      */
     public function setRepeatCount($repeatCount)
@@ -285,6 +295,7 @@ class CalendarItem
 
     /**
      * @param DateTime $repeatEndDate
+     *
      * @return $this;
      */
     public function setRepeatEndDate($repeatEndDate)
@@ -304,6 +315,7 @@ class CalendarItem
 
     /**
      * @param Calendar $calendar
+     *
      * @return $this
      */
     public function setCalendar(Calendar $calendar)
@@ -327,6 +339,7 @@ class CalendarItem
 
     /**
      * @param DateTime $originalDate
+     *
      * @return $this
      */
     public function setOriginalDate(DateTime $originalDate)
@@ -347,22 +360,23 @@ class CalendarItem
     /**
      * @param DateTime $dateStart
      * @param DateTime $dateEnd
+     *
      * @return Event[]
      */
     public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null)
     {
         $events = array();
 
-        if ($dateStart === null) {
+        if (null === $dateStart) {
             $dateStart = new DateTime();
         }
 
-        if ($dateEnd === null) {
+        if (null === $dateEnd) {
             $dateEnd = clone $dateStart;
             $dateEnd->add(new DateInterval('P1Y'));
         }
 
-        if (($this->repeatEndDate !== null) && ($this->repeatEndDate < $dateEnd)) {
+        if ((null !== $this->repeatEndDate) && ($this->repeatEndDate < $dateEnd)) {
             $dateEnd = $this->repeatEndDate;
         }
 
@@ -413,6 +427,7 @@ class CalendarItem
     /**
      * @param DateTime $dateStart
      * @param DateTime $dateEnd
+     *
      * @return Event
      */
     protected function createEvent(DateTime $dateStart, DateTime $dateEnd)

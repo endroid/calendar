@@ -21,7 +21,7 @@ class IcalWriter
             'VERSION:2.0',
             'X-WR-CALNAME:'.$calendar->getTitle(),
             'PRODID:-//hacksw/handcal//NONSGML v1.0//EN',
-            'CALSCALE:GREGORIAN'
+            'CALSCALE:GREGORIAN',
         ];
 
         $dateTimeZoneUTC = new DateTimeZone('UTC');
@@ -51,7 +51,7 @@ class IcalWriter
             $lines = array_merge($lines, [
                 'UID:'.sha1($event->getTitle()),
                 'DTSTAMP:'.$dateStart->format('U'),
-                'END:VEVENT'
+                'END:VEVENT',
             ]);
         }
 

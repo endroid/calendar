@@ -122,7 +122,7 @@ class IcalReader
     {
         $data = $this->getData('RRULE', $calendarItemData);
 
-        if (count($data) == 0) {
+        if (0 == count($data)) {
             return;
         }
 
@@ -159,7 +159,7 @@ class IcalReader
     {
         $data = $this->getData('RECURRENCE-ID', $calendarItemData);
 
-        if (count($data) == 0) {
+        if (0 == count($data)) {
             return;
         }
 
@@ -186,7 +186,7 @@ class IcalReader
             $line = [];
             $values = array_merge(explode(';', trim($matches[2][$i], ';')), explode(';', $matches[3][$i]));
             foreach ($values as $value) {
-                if (strpos($value, '=') !== false) {
+                if (false !== strpos($value, '=')) {
                     $parts = explode('=', $value);
                     $line['extra'][$parts[0]] = $parts[1];
                 } else {
@@ -246,7 +246,7 @@ class IcalReader
         $frequency = substr($data['extra']['FREQ'], 0, 1);
         $interval = isset($data['extra']['INTERVAL']) ? $data['extra']['INTERVAL'] : 1;
 
-        if ($frequency == 'W') {
+        if ('W' == $frequency) {
             $frequency = 'D';
             $interval *= 7;
         }

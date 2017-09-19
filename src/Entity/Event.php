@@ -105,7 +105,7 @@ class Event
      */
     public function getDateStart(DateTimeZone $timeZone = null)
     {
-        if ($timeZone == null) {
+        if (null == $timeZone) {
             $timeZone = new DateTimeZone(date_default_timezone_get());
         }
 
@@ -137,7 +137,7 @@ class Event
      */
     public function getDateEnd(DateTimeZone $timeZone = null)
     {
-        if ($timeZone == null) {
+        if (null == $timeZone) {
             $timeZone = new DateTimeZone(date_default_timezone_get());
         }
 
@@ -151,6 +151,6 @@ class Event
      */
     public function isAllDay()
     {
-        return $this->dateStart->format('H') === '00';
+        return '00' === $this->dateStart->format('H');
     }
 }
