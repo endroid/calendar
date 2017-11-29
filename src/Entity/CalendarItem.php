@@ -140,7 +140,7 @@ class CalendarItem
         return $this->repeatCount;
     }
 
-    public function setRepeatEndDate(DateTime $repeatEndDate): void
+    public function setRepeatEndDate(DateTime $repeatEndDate = null): void
     {
         $this->repeatEndDate = $repeatEndDate;
     }
@@ -159,7 +159,7 @@ class CalendarItem
         }
     }
 
-    public function getCalendar(): Calendar
+    public function getCalendar(): ?Calendar
     {
         return $this->calendar;
     }
@@ -169,7 +169,7 @@ class CalendarItem
         $this->originalDate = $originalDate;
     }
 
-    public function getOriginalDate(): DateTime
+    public function getOriginalDate(): ?DateTime
     {
         return $this->originalDate;
     }

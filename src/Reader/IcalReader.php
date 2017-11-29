@@ -161,7 +161,7 @@ class IcalReader
     private function getRepeatInterval(array $data): DateInterval
     {
         if (!isset($data['extra']['FREQ'])) {
-            return;
+            return null;
         }
 
         $frequency = substr($data['extra']['FREQ'], 0, 1);
@@ -202,10 +202,10 @@ class IcalReader
         return $repeatCount;
     }
 
-    private function getRepeatEndDate(array $data): DateTime
+    private function getRepeatEndDate(array $data): ?DateTime
     {
         if (!isset($data['extra']['UNTIL'])) {
-            return;
+            return null;
         }
 
         $repeatEndDate = new DateTime($data['extra']['UNTIL']);

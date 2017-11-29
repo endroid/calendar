@@ -43,8 +43,7 @@ class IcalReaderTest extends TestCase
     protected function getCalendar()
     {
         $reader = new IcalReader();
-        $calendarData = file_get_contents(__DIR__.'/../test.ics');
-        $calendar = $reader->readFromString($calendarData);
+        $calendar = $reader->readFromFile(__DIR__.'/../test.ics');
 
         return $calendar;
     }
