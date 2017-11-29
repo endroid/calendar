@@ -1,7 +1,7 @@
 {
     "name": "endroid/calendar",
     "description": "Endroid Calendar",
-    "keywords": ["endroid", "calendar", "google", "ics", "ical"],
+    "keywords": ["endroid", "calendar", "google", "ics", "ical", "php"],
     "homepage": "https://github.com/endroid/Calendar",
     "type": "library",
     "license": "MIT",
@@ -9,14 +9,14 @@
         {
             "name": "Jeroen van den Enden",
             "email": "info@endroid.nl",
-            "homepage": "http://endroid.nl/"
+            "homepage": "https://endroid.nl/"
         }
     ],
     "require": {
-        "php": ">=5.4"
+        "php": ">=7.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.0|^5.0"
+        "phpunit/phpunit": ">=5.7"
     },
     "autoload": {
         "psr-4": {
@@ -28,12 +28,9 @@
             "Endroid\\Calendar\\Tests\\": "tests/"
         }
     },
-    "config": {
-        "bin-dir": "bin"
-    },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "2.x-dev"
         }
     }
 }

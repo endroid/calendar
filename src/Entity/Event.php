@@ -14,96 +14,37 @@ use DateTimeZone;
 
 class Event
 {
-    /**
-     * @var string
-     */
-    protected $title;
+    private $title;
+    private $description;
+    private $dateStart;
+    private $dateEnd;
 
-    /**
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * @var DateTime
-     */
-    protected $dateStart;
-
-    /**
-     * @var DateTime
-     */
-    protected $dateEnd;
-
-    /**
-     * Sets the title.
-     *
-     * @param $title
-     *
-     * @return $this
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
-
-        return $this;
     }
 
-    /**
-     * Returns the title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Sets the description.
-     *
-     * @param string $description
-     *
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription($description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
-    /**
-     * Returns the description.
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * Sets the start date.
-     *
-     * @param DateTime $dateStart
-     *
-     * @return $this
-     */
-    public function setDateStart(DateTime $dateStart)
+    public function setDateStart(DateTime $dateStart): void
     {
         $this->dateStart = $dateStart;
-
-        return $this;
     }
 
-    /**
-     * Returns the start date.
-     *
-     * @param DateTimeZone $timeZone
-     *
-     * @return DateTime
-     */
-    public function getDateStart(DateTimeZone $timeZone = null)
+    public function getDateStart(DateTimeZone $timeZone = null): DateTime
     {
         if (null == $timeZone) {
             $timeZone = new DateTimeZone(date_default_timezone_get());
@@ -114,28 +55,12 @@ class Event
         return $this->dateStart;
     }
 
-    /**
-     * Sets the end date.
-     *
-     * @param DateTime $dateEnd
-     *
-     * @return $this
-     */
-    public function setDateEnd(DateTime $dateEnd)
+    public function setDateEnd(DateTime $dateEnd): void
     {
         $this->dateEnd = $dateEnd;
-
-        return $this;
     }
 
-    /**
-     * Returns the end date.
-     *
-     * @param DateTimeZone $timeZone
-     *
-     * @return DateTime
-     */
-    public function getDateEnd(DateTimeZone $timeZone = null)
+    public function getDateEnd(DateTimeZone $timeZone = null): DateTime
     {
         if (null == $timeZone) {
             $timeZone = new DateTimeZone(date_default_timezone_get());
@@ -146,10 +71,7 @@ class Event
         return $this->dateEnd;
     }
 
-    /**
-     * @return bool
-     */
-    public function isAllDay()
+    public function isAllDay(): bool
     {
         return '00' === $this->dateStart->format('H');
     }

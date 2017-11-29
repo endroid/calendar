@@ -13,112 +13,50 @@ use DateTime;
 
 class Calendar
 {
-    /**
-     * @var int
-     */
-    protected $id;
+    private $id;
+    private $title;
+    private $calendarItems;
 
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var CalendarItem[]
-     */
-    protected $calendarItems;
-
-    /**
-     * Creates a new instance.
-     */
     public function __construct()
     {
         $this->calendarItems = [];
     }
 
-    /**
-     * Returns the ID.
-     *
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * Sets the title.
-     *
-     * @param $title
-     *
-     * @return Calendar
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
-
-        return $this;
     }
 
-    /**
-     * Returns the title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Adds a calendar item.
-     *
-     * @param CalendarItem $calendarItem
-     *
-     * @return $this
-     */
-    public function addCalendarItem(CalendarItem $calendarItem)
+    public function addCalendarItem(CalendarItem $calendarItem): void
     {
         $this->calendarItems[] = $calendarItem;
 
-        if ($calendarItem->getCalendar() != $this) {
+        if ($calendarItem->getCalendar() !== $this) {
             $calendarItem->setCalendar($this);
         }
-
-        return $this;
     }
 
-    /**
-     * Checks if the calendar has the given calendar item.
-     *
-     * @param CalendarItem $calendarItem
-     *
-     * @return bool
-     */
-    public function hasCalendarItem(CalendarItem $calendarItem)
+    public function hasCalendarItem(CalendarItem $calendarItem): bool
     {
         return in_array($calendarItem, $this->calendarItems);
     }
 
-    /**
-     * Returns all calendar items.
-     *
-     * @return CalendarItem[]
-     */
-    public function getCalendarItems()
+    public function getCalendarItems(): array
     {
         return $this->calendarItems;
     }
 
-    /**
-     * Returns all events that match the criteria given.
-     *
-     * @param DateTime $dateStart
-     * @param DateTime $dateEnd
-     *
-     * @return Event[]
-     */
-    public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null)
+    public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null): array
     {
         $events = [];
 
@@ -131,15 +69,7 @@ class Calendar
         return $events;
     }
 
-    /**
-     * Compares two dates.
-     *
-     * @param Event $eventA
-     * @param Event $eventB
-     *
-     * @return int
-     */
-    protected function dateCompare(Event $eventA, Event $eventB)
+    private function dateCompare(Event $eventA, Event $eventB)
     {
         $dateStartA = $eventA->getDateStart()->format('YmdHis');
         $dateEndA = $eventA->getDateEnd()->format('YmdHis');

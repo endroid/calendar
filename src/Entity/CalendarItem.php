@@ -14,247 +14,107 @@ use DateInterval;
 
 class CalendarItem
 {
-    /**
-     * @var string
-     */
-    protected $id;
+    private $id;
+    private $title;
+    private $description;
+    private $dateStart;
+    private $dateEnd;
+    private $repeatInterval;
+    private $repeatDays;
+    private $repeatExceptions;
+    private $repeatCount;
+    private $repeatEndDate;
+    private $calendar;
+    private $originalDate;
 
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $description;
-
-    /**
-     * @var DateTime
-     */
-    protected $dateStart;
-
-    /**
-     * @var DateTime
-     */
-    protected $dateEnd;
-
-    /**
-     * @var DateInterval
-     */
-    protected $repeatInterval;
-
-    /**
-     * @var array
-     */
-    protected $repeatDays;
-
-    /**
-     * @var DateTime[]
-     */
-    protected $repeatExceptions;
-
-    /**
-     * @var int
-     */
-    protected $repeatCount;
-
-    /**
-     * @var DateTime
-     */
-    protected $repeatEndDate;
-
-    /**
-     * @var Calendar
-     */
-    protected $calendar;
-
-    /**
-     * @var DateTime
-     */
-    protected $originalDate;
-
-    /**
-     * Creates a new instance.
-     */
     public function __construct()
     {
         $this->repeatDays = array();
         $this->repeatExceptions = array();
-
         $this->repeatCount = 0;
     }
 
-    /**
-     * @param string $id
-     *
-     * @return $this
-     */
-    public function setId($id)
+    public function setId(string $id): void
     {
         $this->id = $id;
-
-        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @param $title
-     *
-     * @return $this
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         $this->title = $title;
-
-        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @param string $description
-     *
-     * @return $this
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         $this->description = $description;
-
-        return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @param DateTime $dateStart
-     *
-     * @return $this
-     */
-    public function setDateStart(DateTime $dateStart)
+    public function setDateStart(DateTime $dateStart): void
     {
         $this->dateStart = $dateStart;
-
-        return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getDateStart()
+    public function getDateStart(): DateTime
     {
         return $this->dateStart;
     }
 
-    /**
-     * @param DateTime $dateEnd
-     *
-     * @return $this
-     */
-    public function setDateEnd(DateTime $dateEnd)
+    public function setDateEnd(DateTime $dateEnd): void
     {
         $this->dateEnd = $dateEnd;
-
-        return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getDateEnd()
+    public function getDateEnd(): DateTime
     {
         return $this->dateEnd;
     }
 
-    /**
-     * @param DateInterval $repeatInterval
-     *
-     * @return $this
-     */
-    public function setRepeatInterval(DateInterval $repeatInterval = null)
+    public function setRepeatInterval(DateInterval $repeatInterval = null): void
     {
         $this->repeatInterval = $repeatInterval;
-
-        return $this;
     }
 
-    /**
-     * @return DateInterval
-     */
-    public function getRepeatInterval()
+    public function getRepeatInterval(): DateInterval
     {
         return $this->repeatInterval;
     }
 
-    /**
-     * @param array $repeatDays
-     *
-     * @return $this
-     */
-    public function setRepeatDays(array $repeatDays)
+    public function setRepeatDays(array $repeatDays): void
     {
         $this->repeatDays = $repeatDays;
-
-        return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getRepeatDays()
+    public function getRepeatDays(): array
     {
         return (array) $this->repeatDays;
     }
 
-    /**
-     * @param DateTime[] $repeatExceptions
-     *
-     * @return $this
-     */
-    public function setRepeatExceptions(array $repeatExceptions)
+    public function setRepeatExceptions(array $repeatExceptions): void
     {
         $this->repeatExceptions = $repeatExceptions;
-
-        return $this;
     }
 
-    /**
-     * @param DateTime $repeatException
-     *
-     * @return $this
-     */
-    public function addRepeatException(DateTime $repeatException)
+    public function addRepeatException(DateTime $repeatException): void
     {
         $this->repeatExceptions[] = $repeatException;
-
-        return $this;
     }
 
-    /**
-     * @param DateTime $date
-     *
-     * @return bool
-     */
-    public function isRepeatException(DateTime $date)
+    public function isRepeatException(DateTime $date): bool
     {
         foreach ($this->repeatExceptions as $repeatException) {
             if ($date == $repeatException) {
@@ -265,105 +125,56 @@ class CalendarItem
         return false;
     }
 
-    /**
-     * @return DateTime[]
-     */
-    public function getRepeatExceptions()
+    public function getRepeatExceptions(): array
     {
         return $this->repeatExceptions;
     }
 
-    /**
-     * @param $repeatCount
-     *
-     * @return $this
-     */
-    public function setRepeatCount($repeatCount)
+    public function setRepeatCount($repeatCount): void
     {
         $this->repeatCount = $repeatCount;
-
-        return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getRepeatCount()
+    public function getRepeatCount(): int
     {
         return $this->repeatCount;
     }
 
-    /**
-     * @param DateTime $repeatEndDate
-     *
-     * @return $this;
-     */
-    public function setRepeatEndDate($repeatEndDate)
+    public function setRepeatEndDate(DateTime $repeatEndDate): void
     {
         $this->repeatEndDate = $repeatEndDate;
-
-        return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getRepeatEndDate()
+    public function getRepeatEndDate(): DateTime
     {
         return $this->repeatEndDate;
     }
 
-    /**
-     * @param Calendar $calendar
-     *
-     * @return $this
-     */
-    public function setCalendar(Calendar $calendar)
+    public function setCalendar(Calendar $calendar): void
     {
         $this->calendar = $calendar;
 
         if (!$calendar->hasCalendarItem($this)) {
             $calendar->addCalendarItem($this);
         }
-
-        return $this;
     }
 
-    /**
-     * @return Calendar
-     */
-    public function getCalendar()
+    public function getCalendar(): Calendar
     {
         return $this->calendar;
     }
 
-    /**
-     * @param DateTime $originalDate
-     *
-     * @return $this
-     */
-    public function setOriginalDate(DateTime $originalDate)
+    public function setOriginalDate(DateTime $originalDate): void
     {
         $this->originalDate = $originalDate;
-
-        return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getOriginalDate()
+    public function getOriginalDate(): DateTime
     {
         return $this->originalDate;
     }
 
-    /**
-     * @param DateTime $dateStart
-     * @param DateTime $dateEnd
-     *
-     * @return Event[]
-     */
-    public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null)
+    public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null): array
     {
         $events = array();
 
@@ -380,13 +191,13 @@ class CalendarItem
             $dateEnd = $this->repeatEndDate;
         }
 
+        /** @var DateTime[][] $repeatDates */
         $repeatDates = $this->getRepeatDates();
 
         for ($count = 0; true; ++$count) {
             if ($this->repeatCount > 0 && $count >= $this->repeatCount) {
                 break;
             }
-            /** @var DateTime[] $repeatDate */
             foreach ($repeatDates as $repeatDate) {
                 if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
                     $events[] = $this->createEvent(clone $repeatDate['start'], clone $repeatDate['end']);
@@ -402,9 +213,6 @@ class CalendarItem
         return $events;
     }
 
-    /**
-     * @return DateTime[]
-     */
     public function getRepeatDates()
     {
         $repeatDateStart = clone $this->getDateStart();
@@ -424,13 +232,7 @@ class CalendarItem
         return $repeatDates;
     }
 
-    /**
-     * @param DateTime $dateStart
-     * @param DateTime $dateEnd
-     *
-     * @return Event
-     */
-    protected function createEvent(DateTime $dateStart, DateTime $dateEnd)
+    protected function createEvent(DateTime $dateStart, DateTime $dateEnd): Event
     {
         $event = new Event();
         $event->setTitle($this->title);

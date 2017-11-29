@@ -18,61 +18,38 @@ use Endroid\Calendar\Exception\InvalidUrlException;
 
 class IcalReader
 {
-    /**
-     * @var array
-     */
-    protected $weekDays = ['MO' => 1, 'TU' => 2, 'WE' => 3, 'TH' => 4, 'FR' => 5, 'SA' => 6, 'SU' => 7];
+    private $weekDays = [
+        'MO' => 1,
+        'TU' => 2,
+        'WE' => 3,
+        'TH' => 4,
+        'FR' => 5,
+        'SA' => 6,
+        'SU' => 7
+    ];
 
-    /**
-     * @param string $url
-     *
-     * @return Calendar
-     *
-     * @throws InvalidUrlException
-     */
-    public function readFromUrl($url)
+    public function readFromUrl(string $url): Calendar
     {
         $calendarData = @file_get_contents($url);
-
-        if (!$calendarData) {
-            throw new InvalidUrlException();
-        }
 
         return $this->readFromString($calendarData);
     }
 
-    /**
-     * @param string $fileName
-     *
-     * @return Calendar
-     */
-    public function readFromFile($fileName)
+    public function readFromFile(string $fileName): Calendar
     {
         $calendarData = file_get_contents($fileName);
 
         return $this->readFromString($calendarData);
     }
 
-    /**
-     * @param string $calendarData
-     *
-     * @return Calendar
-     */
-    public function readFromString($calendarData)
+    public function readFromString(string $calendarData): Calendar
     {
         $calendar = $this->parseCalendarData($calendarData);
 
         return $calendar;
     }
 
-    /**
-     * Parses calendar data to a calendar object.
-     *
-     * @param string $calendarData
-     *
-     * @return Calendar
-     */
-    public function parseCalendarData($calendarData)
+    public function parseCalendarData(string $calendarData): Calendar
     {
         $calendar = new Calendar();
         $calendar->setTitle($this->getValue('X-WR-CALNAME', $calendarData));
@@ -90,14 +67,7 @@ class IcalReader
         return $calendar;
     }
 
-    /**
-     * Parses calendar item data to a calendar item object.
-     *
-     * @param string $calendarItemData
-     *
-     * @return CalendarItem
-     */
-    protected function parseCalendarItemData($calendarItemData)
+    private function parseCalendarItemData(string $calendarItemData): CalendarItem
     {
         $calendarItem = new CalendarItem();
         $calendarItem->setId($this->getValue('UID', $calendarItemData));
@@ -112,13 +82,7 @@ class IcalReader
         return $calendarItem;
     }
 
-    /**
-     * Sets the calendar item repeat rules.
-     *
-     * @param $calendarItemData
-     * @param CalendarItem $calendarItem
-     */
-    protected function setRepeatRule($calendarItemData, CalendarItem $calendarItem)
+    private function setRepeatRule(string $calendarItemData, CalendarItem $calendarItem): void
     {
         $data = $this->getData('RRULE', $calendarItemData);
 
@@ -133,13 +97,7 @@ class IcalReader
         $this->setRepeatExceptions($calendarItemData, $calendarItem);
     }
 
-    /**
-     * Sets the calendar repeat exceptions.
-     *
-     * @param $calendarItemData
-     * @param CalendarItem $calendarItem
-     */
-    protected function setRepeatExceptions($calendarItemData, CalendarItem $calendarItem)
+    private function setRepeatExceptions(string $calendarItemData, CalendarItem $calendarItem): void
     {
         $data = $this->getData('EXDATE', $calendarItemData);
 
@@ -149,13 +107,7 @@ class IcalReader
         }
     }
 
-    /**
-     * Set the original date in case of a revision.
-     *
-     * @param $calendarItemData
-     * @param CalendarItem $calendarItem
-     */
-    protected function setOriginalDate($calendarItemData, CalendarItem $calendarItem)
+    private function setOriginalDate(string $calendarItemData, CalendarItem $calendarItem): void
     {
         $data = $this->getData('RECURRENCE-ID', $calendarItemData);
 
@@ -167,15 +119,7 @@ class IcalReader
         $calendarItem->setOriginalDate($date);
     }
 
-    /**
-     * Returns the parsed data for a specific key.
-     *
-     * @param $name
-     * @param $calendarData
-     *
-     * @return array
-     */
-    protected function getData($name, $calendarData)
+    private function getData(string $name, string $calendarData): array
     {
         $data = [];
 
@@ -199,30 +143,14 @@ class IcalReader
         return $data;
     }
 
-    /**
-     * Returns a value.
-     *
-     * @param $name
-     * @param $calendarData
-     *
-     * @return mixed
-     */
-    protected function getValue($name, $calendarData)
+    private function getValue(string $name, string $calendarData): string
     {
         $data = $this->getData($name, $calendarData);
 
         return count($data) ? $data[0]['value'] : null;
     }
 
-    /**
-     * Returns a date.
-     *
-     * @param $name
-     * @param $calendarData
-     *
-     * @return DateTime
-     */
-    protected function getDate($name, $calendarData)
+    private function getDate(string $name, string $calendarData): DateTime
     {
         $data = $this->getData($name, $calendarData);
         $date = $this->createDate($data[0]);
@@ -230,14 +158,7 @@ class IcalReader
         return $date;
     }
 
-    /**
-     * Returns the repeat interval.
-     *
-     * @param array $data
-     *
-     * @return DateInterval
-     */
-    protected function getRepeatInterval(array $data)
+    private function getRepeatInterval(array $data): DateInterval
     {
         if (!isset($data['extra']['FREQ'])) {
             return;
@@ -256,14 +177,7 @@ class IcalReader
         return $dateInterval;
     }
 
-    /**
-     * Returns the days by which to repeat.
-     *
-     * @param array $data
-     *
-     * @return array
-     */
-    protected function getRepeatDays(array $data)
+    private function getRepeatDays(array $data): array
     {
         if (!isset($data['extra']['BYDAY'])) {
             return [];
@@ -277,14 +191,7 @@ class IcalReader
         return $days;
     }
 
-    /**
-     * Returns the repeat count.
-     *
-     * @param array $data
-     *
-     * @return int
-     */
-    protected function getRepeatCount(array $data)
+    private function getRepeatCount(array $data): int
     {
         if (!isset($data['extra']['COUNT'])) {
             return 0;
@@ -295,14 +202,7 @@ class IcalReader
         return $repeatCount;
     }
 
-    /**
-     * Returns the date the repeat rule stops.
-     *
-     * @param array $data
-     *
-     * @return DateTime
-     */
-    protected function getRepeatEndDate(array $data)
+    private function getRepeatEndDate(array $data): DateTime
     {
         if (!isset($data['extra']['UNTIL'])) {
             return;
@@ -313,14 +213,7 @@ class IcalReader
         return $repeatEndDate;
     }
 
-    /**
-     * Creates a date.
-     *
-     * @param $data
-     *
-     * @return DateTime
-     */
-    protected function createDate($data)
+    private function createDate(array $data): DateTime
     {
         $zone = new DateTimeZone(isset($data['extra']['TZID']) ? $data['extra']['TZID'] : 'UTC');
         $date = new DateTime($data['value'], $zone);
@@ -331,10 +224,8 @@ class IcalReader
     /**
      * Process revisions. Adds revisions as exceptions to
      * the original calendar item.
-     *
-     * @param CalendarItem[] $calendarItems
      */
-    protected function processRevisions(array $calendarItems)
+    private function processRevisions(array $calendarItems): void
     {
         /** @var DateTime[] $revisedDates */
         $revisedDates = [];

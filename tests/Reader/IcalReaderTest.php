@@ -12,9 +12,9 @@ namespace Endroid\Calendar\Tests\Reader\CalendarReaderTest;
 use DateTime;
 use Endroid\Calendar\Entity\Calendar;
 use Endroid\Calendar\Reader\IcalReader;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class IcalReaderTest extends PHPUnit_Framework_TestCase
+class IcalReaderTest extends TestCase
 {
     /**
      * Tests if the number of recurring events is correct for
