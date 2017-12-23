@@ -34,7 +34,7 @@ class Calendar
 
     public function getTitle(): string
     {
-        return $this->title;
+        return (string) $this->title;
     }
 
     public function addCalendarItem(CalendarItem $calendarItem): void
