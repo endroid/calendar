@@ -1,5 +1,4 @@
-Calendar
-========
+# Calendar
 
 *By [endroid](https://endroid.nl/)*
 

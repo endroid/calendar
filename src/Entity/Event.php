@@ -29,12 +29,12 @@ class Event
         return $this->title;
     }
 
-    public function setDescription($description): void
+    public function setDescription(string $description = null): void
     {
         $this->description = $description;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }

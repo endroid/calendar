@@ -8,7 +8,7 @@ matrix:
   fast_finish: true
 
 before_install:
-
+  - phpenv config-rm xdebug.ini
   - composer install --no-interaction
 
 script: vendor/bin/phpunit

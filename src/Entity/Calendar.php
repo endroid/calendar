@@ -40,10 +40,7 @@ class Calendar
     public function addCalendarItem(CalendarItem $calendarItem): void
     {
         $this->calendarItems[] = $calendarItem;
-
-        if ($calendarItem->getCalendar() !== $this) {
-            $calendarItem->setCalendar($this);
-        }
+        $calendarItem->setCalendar($this);
     }
 
     public function hasCalendarItem(CalendarItem $calendarItem): bool
@@ -69,7 +66,7 @@ class Calendar
         return $events;
     }
 
-    private function dateCompare(Event $eventA, Event $eventB)
+    private function dateCompare(Event $eventA, Event $eventB): int
     {
         $dateStartA = $eventA->getDateStart()->format('YmdHis');
         $dateEndA = $eventA->getDateEnd()->format('YmdHis');

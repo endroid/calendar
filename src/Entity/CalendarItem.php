@@ -54,12 +54,12 @@ class CalendarItem
         return $this->title;
     }
 
-    public function setDescription(string $description): void
+    public function setDescription(string $description = null): void
     {
         $this->description = $description;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -89,7 +89,7 @@ class CalendarItem
         $this->repeatInterval = $repeatInterval;
     }
 
-    public function getRepeatInterval(): DateInterval
+    public function getRepeatInterval(): ?DateInterval
     {
         return $this->repeatInterval;
     }
@@ -153,13 +153,9 @@ class CalendarItem
     public function setCalendar(Calendar $calendar): void
     {
         $this->calendar = $calendar;
-
-        if (!$calendar->hasCalendarItem($this)) {
-            $calendar->addCalendarItem($this);
-        }
     }
 
-    public function getCalendar(): ?Calendar
+    public function getCalendar(): Calendar
     {
         return $this->calendar;
     }
@@ -213,7 +209,7 @@ class CalendarItem
         return $events;
     }
 
-    public function getRepeatDates()
+    public function getRepeatDates(): array
     {
         $repeatDateStart = clone $this->getDateStart();
         $repeatDateEnd = clone $this->getDateEnd();
