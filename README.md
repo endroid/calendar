@@ -1,7 +1,7 @@
 Calendar
 ========
 
-*By [endroid](http://endroid.nl/)*
+*By [endroid](https://endroid.nl/)*
 
 [![Latest Stable Version](http://img.shields.io/packagist/v/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
 [![Build Status](http://img.shields.io/travis/endroid/Calendar.svg)](http://travis-ci.org/endroid/Calendar)
