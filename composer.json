@@ -2,7 +2,7 @@
     "name": "endroid/calendar",
     "description": "Endroid Calendar",
     "keywords": ["endroid", "calendar", "google", "ics", "ical", "php"],
-    "homepage": "https://github.com/endroid/Calendar",
+    "homepage": "https://github.com/endroid/calendar",
     "type": "library",
     "license": "MIT",
     "authors": [
