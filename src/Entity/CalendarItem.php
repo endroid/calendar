@@ -29,8 +29,8 @@ class CalendarItem
 
     public function __construct()
     {
-        $this->repeatDays = array();
-        $this->repeatExceptions = array();
+        $this->repeatDays = [];
+        $this->repeatExceptions = [];
         $this->repeatCount = 0;
     }
 
@@ -172,7 +172,7 @@ class CalendarItem
 
     public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null): array
     {
-        $events = array();
+        $events = [];
 
         if (null === $dateStart) {
             $dateStart = new DateTime();
@@ -213,7 +213,7 @@ class CalendarItem
     {
         $repeatDateStart = clone $this->getDateStart();
         $repeatDateEnd = clone $this->getDateEnd();
-        $repeatDates = array(array('start' => clone $repeatDateStart, 'end' => clone $repeatDateEnd));
+        $repeatDates = [['start' => clone $repeatDateStart, 'end' => clone $repeatDateEnd]];
         $repeatDays = $this->getRepeatDays();
 
         $dayInterval = new DateInterval('P1D');
@@ -221,7 +221,7 @@ class CalendarItem
             $repeatDateStart->add($dayInterval);
             $repeatDateEnd->add($dayInterval);
             if (in_array($repeatDateStart->format('w'), $repeatDays)) {
-                $repeatDates[] = array('start' => clone $repeatDateStart, 'end' => clone $repeatDateEnd);
+                $repeatDates[] = ['start' => clone $repeatDateStart, 'end' => clone $repeatDateEnd];
             }
         }
 
