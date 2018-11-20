@@ -49,7 +49,7 @@ class IcalWriter
             }
 
             $lines = array_merge($lines, [
-                'UID:'.sha1($event->getTitle()),
+                'UID:'.sha1($event->getUid()),
                 'DTSTAMP:'.$dateStart->format('Ymd\THis\Z'),
                 'END:VEVENT',
             ]);

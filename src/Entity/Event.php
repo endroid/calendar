@@ -19,6 +19,11 @@ class Event
     private $dateStart;
     private $dateEnd;
 
+    public function getUid(): string
+    {
+        return sha1(spl_object_hash($this));
+    }
+
     public function setTitle(string $title): void
     {
         $this->title = $title;
