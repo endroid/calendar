@@ -31,14 +31,14 @@ class IcalReader
 
     public function readFromUrl(string $url): Calendar
     {
-        $calendarData = @file_get_contents($url);
+        $calendarData = (string) file_get_contents($url);
 
         return $this->readFromString($calendarData);
     }
 
     public function readFromFile(string $fileName): Calendar
     {
-        $calendarData = file_get_contents($fileName);
+        $calendarData = (string) file_get_contents($fileName);
 
         return $this->readFromString($calendarData);
     }
@@ -159,7 +159,7 @@ class IcalReader
         return $date;
     }
 
-    private function getRepeatInterval(array $data): DateInterval
+    private function getRepeatInterval(array $data): ?DateInterval
     {
         if (!isset($data['extra']['FREQ'])) {
             return null;

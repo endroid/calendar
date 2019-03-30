@@ -56,7 +56,7 @@ class CalendarItem
         return $this->title;
     }
 
-    public function setDescription(string $description = null): void
+    public function setDescription(?string $description): void
     {
         $this->description = $description;
     }
@@ -86,7 +86,7 @@ class CalendarItem
         return $this->dateEnd;
     }
 
-    public function setRepeatInterval(DateInterval $repeatInterval = null): void
+    public function setRepeatInterval(?DateInterval $repeatInterval): void
     {
         $this->repeatInterval = $repeatInterval;
     }
@@ -142,12 +142,12 @@ class CalendarItem
         return $this->repeatCount;
     }
 
-    public function setRepeatEndDate(DateTime $repeatEndDate = null): void
+    public function setRepeatEndDate(?DateTime $repeatEndDate): void
     {
         $this->repeatEndDate = $repeatEndDate;
     }
 
-    public function getRepeatEndDate(): DateTime
+    public function getRepeatEndDate(): ?DateTime
     {
         return $this->repeatEndDate;
     }
@@ -172,7 +172,7 @@ class CalendarItem
         return $this->originalDate;
     }
 
-    public function getEvents(DateTime $dateStart = null, DateTime $dateEnd = null): array
+    public function getEvents(?DateTime $dateStart, ?DateTime $dateEnd): array
     {
         $events = [];
 
