@@ -18,6 +18,9 @@
     "require-dev": {
         "endroid/test": "dev-master"
     },
+    "config": {
+        "sort-packages": true
+    },
     "autoload": {
         "psr-4": {
             "Endroid\\Calendar\\": "src/"
