@@ -3,7 +3,7 @@
 *By [endroid](https://endroid.nl/)*
 
 [![Latest Stable Version](http://img.shields.io/packagist/v/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
-[![Build Status](http://img.shields.io/travis/endroid/calendar.svg)](http://travis-ci.org/endroid/calendar)
+[![Build Status](https://github.com/endroid/calendar/workflows/CI/badge.svg)](https://github.com/endroid/calendar/actions)
 [![Total Downloads](http://img.shields.io/packagist/dt/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
 [![Total Downloads](http://img.shields.io/packagist/dm/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
 [![License](http://img.shields.io/packagist/l/endroid/calendar.svg)](https://packagist.org/packages/endroid/calendar)
