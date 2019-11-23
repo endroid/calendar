@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Reader;
 
-use DateInterval;
-use DateTime;
-use DateTimeZone;
 use Endroid\Calendar\Entity\Calendar;
 use Endroid\Calendar\Entity\CalendarItem;
 
@@ -53,14 +50,13 @@ class IcalReader
     public function parseCalendarData(string $calendarData): Calendar
     {
         $calendar = new Calendar();
-        $calendar->setTitle($this->getValue('X-WR-CALNAME', $calendarData));
+        $calendar->setTitle(strval($this->getValue('X-WR-CALNAME', $calendarData)));
 
         preg_match_all('#BEGIN:VEVENT.*?END:VEVENT#s', $calendarData, $matches);
 
         $calendarItemDataArray = $matches[0];
         foreach ($calendarItemDataArray as $calendarItemData) {
-            $calendarItem = $this->parseCalendarItemData($calendarItemData);
-            $calendar->addCalendarItem($calendarItem);
+            $this->parseCalendarItemData($calendarItemData, $calendar);
         }
 
         $this->processRevisions($calendar->getCalendarItems());
@@ -68,11 +64,11 @@ class IcalReader
         return $calendar;
     }
 
-    private function parseCalendarItemData(string $calendarItemData): CalendarItem
+    private function parseCalendarItemData(string $calendarItemData, Calendar $calendar): CalendarItem
     {
-        $calendarItem = new CalendarItem();
-        $calendarItem->setId($this->getValue('UID', $calendarItemData));
-        $calendarItem->setTitle($this->getValue('SUMMARY', $calendarItemData));
+        $calendarItem = new CalendarItem($calendar);
+        $calendarItem->setId(strval($this->getValue('UID', $calendarItemData)));
+        $calendarItem->setTitle(strval($this->getValue('SUMMARY', $calendarItemData)));
         $calendarItem->setDescription($this->getValue('DESCRIPTION', $calendarItemData));
         $calendarItem->setDateStart($this->getDate('DTSTART', $calendarItemData));
         $calendarItem->setDateEnd($this->getDate('DTEND', $calendarItemData));
@@ -144,14 +140,14 @@ class IcalReader
         return $data;
     }
 
-    private function getValue(string $name, string $calendarData): string
+    private function getValue(string $name, string $calendarData): ?string
     {
         $data = $this->getData($name, $calendarData);
 
         return count($data) ? $data[0]['value'] : null;
     }
 
-    private function getDate(string $name, string $calendarData): DateTime
+    private function getDate(string $name, string $calendarData): \DateTime
     {
         $data = $this->getData($name, $calendarData);
         $date = $this->createDate($data[0]);
@@ -159,7 +155,7 @@ class IcalReader
         return $date;
     }
 
-    private function getRepeatInterval(array $data): ?DateInterval
+    private function getRepeatInterval(array $data): ?\DateInterval
     {
         if (!isset($data['extra']['FREQ'])) {
             return null;
@@ -173,7 +169,7 @@ class IcalReader
             $interval *= 7;
         }
 
-        $dateInterval = new DateInterval('P'.$interval.$frequency);
+        $dateInterval = new \DateInterval('P'.$interval.$frequency);
 
         return $dateInterval;
     }
@@ -203,21 +199,21 @@ class IcalReader
         return $repeatCount;
     }
 
-    private function getRepeatEndDate(array $data): ?DateTime
+    private function getRepeatEndDate(array $data): ?\DateTime
     {
         if (!isset($data['extra']['UNTIL'])) {
             return null;
         }
 
-        $repeatEndDate = new DateTime($data['extra']['UNTIL']);
+        $repeatEndDate = new \DateTime($data['extra']['UNTIL']);
 
         return $repeatEndDate;
     }
 
-    private function createDate(array $data): DateTime
+    private function createDate(array $data): \DateTime
     {
-        $zone = new DateTimeZone(isset($data['extra']['TZID']) ? $data['extra']['TZID'] : 'UTC');
-        $date = new DateTime($data['value'], $zone);
+        $zone = new \DateTimeZone(isset($data['extra']['TZID']) ? $data['extra']['TZID'] : 'UTC');
+        $date = new \DateTime($data['value'], $zone);
 
         return $date;
     }
@@ -228,7 +224,7 @@ class IcalReader
      */
     private function processRevisions(array $calendarItems): void
     {
-        /** @var DateTime[] $revisedDates */
+        /** @var \DateTime[][] $revisedDates */
         $revisedDates = [];
 
         /** @var CalendarItem[] $originalCalendarItems */

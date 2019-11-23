@@ -22,18 +22,21 @@ class CalendarItem
     private $dateStart;
     private $dateEnd;
     private $repeatInterval;
-    private $repeatDays;
-    private $repeatExceptions;
-    private $repeatCount;
+
+    /** @var array */
+    private $repeatDays = [];
+
+    /** @var array */
+    private $repeatExceptions = [];
+
+    private $repeatCount = 0;
     private $repeatEndDate;
     private $calendar;
     private $originalDate;
 
-    public function __construct()
+    public function __construct(Calendar $calendar)
     {
-        $this->repeatDays = [];
-        $this->repeatExceptions = [];
-        $this->repeatCount = 0;
+        $this->setCalendar($calendar);
     }
 
     public function setId(string $id): void
@@ -155,9 +158,13 @@ class CalendarItem
     public function setCalendar(Calendar $calendar): void
     {
         $this->calendar = $calendar;
+
+        if (!$calendar->hasCalendarItem($this)) {
+            $calendar->addCalendarItem($this);
+        }
     }
 
-    public function getCalendar(): Calendar
+    public function getCalendar(): ?Calendar
     {
         return $this->calendar;
     }

@@ -17,11 +17,13 @@ class Calendar
 {
     private $id;
     private $title;
-    private $calendarItems;
+    private $calendarItems = [];
 
-    public function __construct()
+    public function __construct(array $calendarItems = [])
     {
-        $this->calendarItems = [];
+        foreach ($calendarItems as $calendarItem) {
+            $this->addCalendarItem($calendarItem);
+        }
     }
 
     public function getId(): int
@@ -36,13 +38,16 @@ class Calendar
 
     public function getTitle(): string
     {
-        return (string) $this->title;
+        return strval($this->title);
     }
 
     public function addCalendarItem(CalendarItem $calendarItem): void
     {
         $this->calendarItems[] = $calendarItem;
-        $calendarItem->setCalendar($this);
+
+        if ($calendarItem->getCalendar() !== $this) {
+            $calendarItem->setCalendar($this);
+        }
     }
 
     public function hasCalendarItem(CalendarItem $calendarItem): bool
