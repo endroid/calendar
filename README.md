@@ -27,7 +27,6 @@ $ composer require endroid/calendar
 ```php
 <?php
 
-use DateTime;
 use Endroid\Calendar\Reader\IcalReader;
 
 $url = '...';
@@ -35,8 +34,8 @@ $url = '...';
 $reader = new IcalReader();
 $calendar = $reader->readFromUrl($url);
 
-$dateStart = new DateTime('2016-01-01');
-$dateEnd = new DateTime('2016-12-31');
+$dateStart = new \DateTime('2016-01-01');
+$dateEnd = new \DateTime('2016-12-31');
 
 $events = $calendar->getEvents($dateStart, $dateEnd);
 ```
