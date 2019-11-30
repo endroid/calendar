@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Entity;
 
-use DateTime;
 use DateInterval;
+use DateTime;
 
 class CalendarItem
 {
