@@ -16,7 +16,7 @@ use Endroid\Calendar\Entity\Calendar;
 
 class IcalWriter
 {
-    public function writeToString(Calendar $calendar): string
+    public function writeToString(Calendar $calendar, ?\DateTime $dateStart, ?\DateTime $dateEnd): string
     {
         $lines = [
             'BEGIN:VCALENDAR',
@@ -28,7 +28,7 @@ class IcalWriter
 
         $dateTimeZoneUTC = new DateTimeZone('UTC');
 
-        foreach ($calendar->getEvents() as $event) {
+        foreach ($calendar->getEvents($dateStart, $dateEnd) as $event) {
             $lines = array_merge($lines, [
                 'BEGIN:VEVENT',
                 'SUMMARY:'.$event->getTitle(),
