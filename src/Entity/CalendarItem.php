@@ -34,9 +34,11 @@ class CalendarItem
     private $calendar;
     private $originalDate;
 
-    public function __construct(Calendar $calendar)
+    public function __construct(Calendar $calendar = null)
     {
-        $this->setCalendar($calendar);
+        if ($calendar instanceof Calendar) {
+            $this->setCalendar($calendar);
+        }
     }
 
     public function setId(string $id): void
