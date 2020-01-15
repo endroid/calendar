@@ -16,7 +16,7 @@ use Endroid\Calendar\Entity\Calendar;
 
 class IcalWriter
 {
-    public function writeToString(Calendar $calendar, ?\DateTime $dateStart, ?\DateTime $dateEnd): string
+    public function writeToString(Calendar $calendar, \DateTime $dateStart = null, \DateTime $dateEnd = null): string
     {
         $lines = [
             'BEGIN:VCALENDAR',
