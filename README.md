@@ -29,13 +29,14 @@ $ composer require endroid/calendar
 
 use Endroid\Calendar\Reader\IcalReader;
 
-$url = '...';
-
 $reader = new IcalReader();
-$calendar = $reader->readFromUrl($url);
 
-$dateStart = new \DateTime('2016-01-01');
-$dateEnd = new \DateTime('2016-12-31');
+// Read from URL or path
+$calendar = $reader->readFromUrl('https://domain/calendar.ics');
+$calendar = $reader->readFromPath(__DIR__.'/calendar.ics');
+
+$dateStart = new \DateTimeImmutable('2016-01-01');
+$dateEnd = new \DateTimeImmutable('2016-12-31');
 
 $events = $calendar->getEvents($dateStart, $dateEnd);
 ```

@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Reader;
 
-use Endroid\Calendar\Entity\Calendar;
-use Endroid\Calendar\Entity\CalendarItem;
+use Endroid\Calendar\Model\Calendar;
+use Endroid\Calendar\Model\CalendarItem;
 
 class IcalReader
 {
+    /** @var array<string, int> */
     private $weekDays = [
         'MO' => 1,
         'TU' => 2,
@@ -28,50 +29,55 @@ class IcalReader
 
     public function readFromUrl(string $url): Calendar
     {
-        $calendarData = (string) file_get_contents($url);
+        $calendarData = file_get_contents($url);
+
+        if (!is_string($calendarData)) {
+            throw new \Exception(sprintf('Could not read from URL "%s"', $url));
+        }
 
         return $this->readFromString($calendarData);
     }
 
-    public function readFromFile(string $fileName): Calendar
+    public function readFromPath(string $path): Calendar
     {
-        $calendarData = (string) file_get_contents($fileName);
+        $calendarData = file_get_contents($path);
+
+        if (!is_string($calendarData)) {
+            throw new \Exception(sprintf('Could not read from path "%s"', $path));
+        }
 
         return $this->readFromString($calendarData);
     }
 
     public function readFromString(string $calendarData): Calendar
     {
-        $calendar = $this->parseCalendarData($calendarData);
-
-        return $calendar;
+        return $this->parseCalendarData($calendarData);
     }
 
     public function parseCalendarData(string $calendarData): Calendar
     {
-        $calendar = new Calendar();
-        $calendar->setTitle(strval($this->getValue('X-WR-CALNAME', $calendarData)));
-
         preg_match_all('#BEGIN:VEVENT.*?END:VEVENT#s', $calendarData, $matches);
 
+        $calendarItems = [];
         $calendarItemDataArray = $matches[0];
         foreach ($calendarItemDataArray as $calendarItemData) {
-            $this->parseCalendarItemData($calendarItemData, $calendar);
+            $calendarItems[] = $this->parseCalendarItemData($calendarItemData);
         }
 
-        $this->processRevisions($calendar->getCalendarItems());
+        $this->processRevisions($calendarItems);
 
-        return $calendar;
+        return new Calendar(strval($this->getValue('X-WR-CALNAME', $calendarData)), $calendarItems);
     }
 
-    private function parseCalendarItemData(string $calendarItemData, Calendar $calendar): CalendarItem
+    private function parseCalendarItemData(string $calendarItemData): CalendarItem
     {
-        $calendarItem = new CalendarItem($calendar);
-        $calendarItem->setId(strval($this->getValue('UID', $calendarItemData)));
-        $calendarItem->setTitle(strval($this->getValue('SUMMARY', $calendarItemData)));
-        $calendarItem->setDescription($this->getValue('DESCRIPTION', $calendarItemData));
-        $calendarItem->setDateStart($this->getDate('DTSTART', $calendarItemData));
-        $calendarItem->setDateEnd($this->getDate('DTEND', $calendarItemData));
+        $calendarItem = new CalendarItem(
+            strval($this->getValue('UID', $calendarItemData)),
+            strval($this->getValue('SUMMARY', $calendarItemData)),
+            strval($this->getValue('DESCRIPTION', $calendarItemData)),
+            $this->getDate('DTSTART', $calendarItemData),
+            $this->getDate('DTEND', $calendarItemData)
+        );
 
         $this->setRepeatRule($calendarItemData, $calendarItem);
         $this->setOriginalDate($calendarItemData, $calendarItem);
@@ -116,6 +122,7 @@ class IcalReader
         $calendarItem->setOriginalDate($date);
     }
 
+    /** @return array<mixed> */
     private function getData(string $name, string $calendarData): array
     {
         $data = [];
@@ -147,14 +154,14 @@ class IcalReader
         return count($data) ? $data[0]['value'] : null;
     }
 
-    private function getDate(string $name, string $calendarData): \DateTime
+    private function getDate(string $name, string $calendarData): \DateTimeImmutable
     {
         $data = $this->getData($name, $calendarData);
-        $date = $this->createDate($data[0]);
 
-        return $date;
+        return $this->createDate($data[0]);
     }
 
+    /** @param array<mixed> $data */
     private function getRepeatInterval(array $data): ?\DateInterval
     {
         if (!isset($data['extra']['FREQ'])) {
@@ -169,11 +176,14 @@ class IcalReader
             $interval *= 7;
         }
 
-        $dateInterval = new \DateInterval('P'.$interval.$frequency);
-
-        return $dateInterval;
+        return new \DateInterval('P'.$interval.$frequency);
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<string>
+     */
     private function getRepeatDays(array $data): array
     {
         if (!isset($data['extra']['BYDAY'])) {
@@ -188,51 +198,47 @@ class IcalReader
         return $days;
     }
 
+    /** @param array<mixed> $data */
     private function getRepeatCount(array $data): int
     {
         if (!isset($data['extra']['COUNT'])) {
             return 0;
         }
 
-        $repeatCount = (int) $data['extra']['COUNT'];
-
-        return $repeatCount;
+        return intval($data['extra']['COUNT']);
     }
 
-    private function getRepeatEndDate(array $data): ?\DateTime
+    /** @param array<mixed> $data */
+    private function getRepeatEndDate(array $data): ?\DateTimeImmutable
     {
         if (!isset($data['extra']['UNTIL'])) {
             return null;
         }
 
-        $repeatEndDate = new \DateTime($data['extra']['UNTIL']);
-
-        return $repeatEndDate;
+        return new \DateTimeImmutable($data['extra']['UNTIL']);
     }
 
-    private function createDate(array $data): \DateTime
+    /** @param array<mixed> $data */
+    private function createDate(array $data): \DateTimeImmutable
     {
         $zone = new \DateTimeZone(isset($data['extra']['TZID']) ? $data['extra']['TZID'] : 'UTC');
-        $date = new \DateTime($data['value'], $zone);
 
-        return $date;
+        return new \DateTimeImmutable($data['value'], $zone);
     }
 
-    /**
-     * Process revisions. Adds revisions as exceptions to
-     * the original calendar item.
-     */
+    /** @param array<CalendarItem> $calendarItems */
     private function processRevisions(array $calendarItems): void
     {
-        /** @var \DateTime[][] $revisedDates */
+        /** @var array<array<\DateTimeImmutable>> $revisedDates */
         $revisedDates = [];
 
-        /** @var CalendarItem[] $originalCalendarItems */
+        /** @var array<CalendarItem> $originalCalendarItems */
         $originalCalendarItems = [];
 
         foreach ($calendarItems as $calendarItem) {
-            if ($calendarItem->getOriginalDate()) {
-                $revisedDates[$calendarItem->getId()][] = $calendarItem->getOriginalDate();
+            $originalDate = $calendarItem->getOriginalDate();
+            if ($originalDate instanceof \DateTimeImmutable) {
+                $revisedDates[$calendarItem->getId()][] = $originalDate;
             } else {
                 $originalCalendarItems[$calendarItem->getId()] = $calendarItem;
             }

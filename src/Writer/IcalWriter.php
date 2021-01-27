@@ -11,12 +11,11 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Writer;
 
-use DateTimeZone;
-use Endroid\Calendar\Entity\Calendar;
+use Endroid\Calendar\Model\Calendar;
 
 class IcalWriter
 {
-    public function writeToString(Calendar $calendar, \DateTime $dateStart = null, \DateTime $dateEnd = null): string
+    public function writeToString(Calendar $calendar, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd): string
     {
         $lines = [
             'BEGIN:VCALENDAR',
@@ -26,7 +25,7 @@ class IcalWriter
             'CALSCALE:GREGORIAN',
         ];
 
-        $dateTimeZoneUTC = new DateTimeZone('UTC');
+        $dateTimeZoneUTC = new \DateTimeZone('UTC');
 
         foreach ($calendar->getEvents($dateStart, $dateEnd) as $event) {
             $lines = array_merge($lines, [
