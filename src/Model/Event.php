@@ -33,7 +33,7 @@ class Event
         $this->dateEnd = $dateEnd;
     }
 
-    public function getUid(): string
+    public function getId(): string
     {
         return sha1(spl_object_hash($this));
     }

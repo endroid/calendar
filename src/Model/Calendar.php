@@ -41,21 +41,15 @@ class Calendar
     public function getEvents(\DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd): array
     {
         $events = [];
-
         foreach ($this->calendarItems as $calendarItem) {
             $events = array_merge($events, $calendarItem->getEvents($dateStart, $dateEnd));
         }
 
         usort($events, function (Event $a, Event $b) {
-            $dateStartA = $a->getDateStart()->format('YmdHis');
-            $dateEndA = $a->getDateEnd()->format('YmdHis');
-            $dateStartB = $b->getDateStart()->format('YmdHis');
-            $dateEndB = $b->getDateEnd()->format('YmdHis');
-
-            $diff = strcmp($dateStartA, $dateStartB);
+            $diff = strcmp($a->getDateStart()->format('YmdHis'), $b->getDateStart()->format('YmdHis'));
 
             if (0 == $diff) {
-                $diff = strcmp($dateEndA, $dateEndB);
+                $diff = strcmp($a->getDateEnd()->format('YmdHis'), $b->getDateEnd()->format('YmdHis'));
             }
 
             return $diff;
