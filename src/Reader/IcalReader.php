@@ -17,7 +17,7 @@ use Endroid\Calendar\Model\CalendarItem;
 class IcalReader
 {
     /** @var array<string, int> */
-    private $weekDays = [
+    private array $weekDays = [
         'MO' => 1,
         'TU' => 2,
         'WE' => 3,

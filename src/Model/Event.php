@@ -13,17 +13,10 @@ namespace Endroid\Calendar\Model;
 
 class Event
 {
-    /** @var string */
-    private $title;
-
-    /** @var string */
-    private $description;
-
-    /** @var \DateTimeImmutable */
-    private $dateStart;
-
-    /** @var \DateTimeImmutable */
-    private $dateEnd;
+    private string $title;
+    private string $description;
+    private \DateTimeImmutable $dateStart;
+    private \DateTimeImmutable $dateEnd;
 
     public function __construct(string $title, string $description, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd)
     {

@@ -13,11 +13,10 @@ namespace Endroid\Calendar\Model;
 
 class Calendar
 {
-    /** @var string */
-    private $title;
+    private string $title;
 
     /** @var array<CalendarItem> */
-    private $calendarItems = [];
+    private array $calendarItems = [];
 
     /** @param array<CalendarItem> $calendarItems */
     public function __construct(string $title, array $calendarItems = [])
