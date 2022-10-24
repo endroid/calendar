@@ -82,6 +82,8 @@ class IcalReader
         $this->setRepeatRule($calendarItemData, $calendarItem);
         $this->setOriginalDate($calendarItemData, $calendarItem);
 
+        $calendarItem->setRawSourceData($calendarItemData);
+
         return $calendarItem;
     }
 
@@ -90,6 +92,11 @@ class IcalReader
         $data = $this->getData('RRULE', $calendarItemData);
 
         if (0 == count($data)) {
+            return;
+        }
+
+        if ('MONTHLY' === $data[0]['extra']['FREQ']) {
+            // This one is not yet implemented
             return;
         }
 
@@ -169,7 +176,7 @@ class IcalReader
         }
 
         $frequency = substr($data['extra']['FREQ'], 0, 1);
-        $interval = isset($data['extra']['INTERVAL']) ? $data['extra']['INTERVAL'] : 1;
+        $interval = $data['extra']['INTERVAL'] ?? 1;
 
         if ('W' == $frequency) {
             $frequency = 'D';

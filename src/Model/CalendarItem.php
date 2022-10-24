@@ -30,6 +30,8 @@ class CalendarItem
     private ?\DateTimeImmutable $repeatEndDate = null;
     private ?\DateTimeImmutable $originalDate = null;
 
+    private string $rawSourceData = '';
+
     public function __construct(string $id, string $title, string $description, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd)
     {
         $this->id = $id;
@@ -142,6 +144,16 @@ class CalendarItem
     public function getOriginalDate(): ?\DateTimeImmutable
     {
         return $this->originalDate;
+    }
+
+    public function setRawSourceData(string $rawSourceData): void
+    {
+        $this->rawSourceData = $rawSourceData;
+    }
+
+    public function getRawSourceData(): string
+    {
+        return $this->rawSourceData;
     }
 
     /** @return array<Event> */
