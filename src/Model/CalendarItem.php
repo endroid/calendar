@@ -2,23 +2,10 @@
 
 declare(strict_types=1);
 
-/*
- * (c) Jeroen van den Enden <info@endroid.nl>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Endroid\Calendar\Model;
 
 class CalendarItem
 {
-    private string $id;
-    private string $title;
-    private string $description;
-    private \DateTimeImmutable $dateStart;
-    private \DateTimeImmutable $dateEnd;
-
     /** @var array<string> */
     private array $repeatDays = [];
 
@@ -26,19 +13,19 @@ class CalendarItem
     private array $repeatExceptions = [];
 
     private int $repeatCount = 0;
-    private ?\DateInterval $repeatInterval = null;
-    private ?\DateTimeImmutable $repeatEndDate = null;
-    private ?\DateTimeImmutable $originalDate = null;
+    private \DateInterval|null $repeatInterval = null;
+    private \DateTimeImmutable|null $repeatEndDate = null;
+    private \DateTimeImmutable|null $originalDate = null;
 
     private string $rawSourceData = '';
 
-    public function __construct(string $id, string $title, string $description, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd)
-    {
-        $this->id = $id;
-        $this->title = $title;
-        $this->description = $description;
-        $this->dateStart = $dateStart;
-        $this->dateEnd = $dateEnd;
+    public function __construct(
+        private string $id,
+        private string $title,
+        private string $description,
+        private \DateTimeImmutable $dateStart,
+        private \DateTimeImmutable $dateEnd
+    ) {
     }
 
     public function getId(): string
@@ -51,7 +38,7 @@ class CalendarItem
         return $this->title;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string|null
     {
         return $this->description;
     }
@@ -121,27 +108,27 @@ class CalendarItem
         $this->repeatInterval = $repeatInterval;
     }
 
-    public function getRepeatInterval(): ?\DateInterval
+    public function getRepeatInterval(): \DateInterval|null
     {
         return $this->repeatInterval;
     }
 
-    public function setRepeatEndDate(?\DateTimeImmutable $repeatEndDate): void
+    public function setRepeatEndDate(\DateTimeImmutable|null $repeatEndDate): void
     {
         $this->repeatEndDate = $repeatEndDate;
     }
 
-    public function getRepeatEndDate(): ?\DateTimeImmutable
+    public function getRepeatEndDate(): \DateTimeImmutable|null
     {
         return $this->repeatEndDate;
     }
 
-    public function setOriginalDate(\DateTimeImmutable $originalDate): void
+    public function setOriginalDate(\DateTimeImmutable|null $originalDate): void
     {
         $this->originalDate = $originalDate;
     }
 
-    public function getOriginalDate(): ?\DateTimeImmutable
+    public function getOriginalDate(): \DateTimeImmutable|null
     {
         return $this->originalDate;
     }

@@ -2,27 +2,15 @@
 
 declare(strict_types=1);
 
-/*
- * (c) Jeroen van den Enden <info@endroid.nl>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Endroid\Calendar\Model;
 
 class Calendar
 {
-    private string $title;
-
-    /** @var array<CalendarItem> */
-    private array $calendarItems = [];
-
-    /** @param array<CalendarItem> $calendarItems */
-    public function __construct(string $title, array $calendarItems = [])
-    {
-        $this->title = $title;
-        $this->calendarItems = $calendarItems;
+    public function __construct(
+        private string $title,
+        /** @var array<CalendarItem> */
+        private array $calendarItems = []
+    ) {
     }
 
     public function getTitle(): string

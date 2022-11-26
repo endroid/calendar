@@ -2,28 +2,16 @@
 
 declare(strict_types=1);
 
-/*
- * (c) Jeroen van den Enden <info@endroid.nl>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Endroid\Calendar\Model;
 
 class Event
 {
-    private string $title;
-    private string $description;
-    private \DateTimeImmutable $dateStart;
-    private \DateTimeImmutable $dateEnd;
-
-    public function __construct(string $title, string $description, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd)
-    {
-        $this->title = $title;
-        $this->description = $description;
-        $this->dateStart = $dateStart;
-        $this->dateEnd = $dateEnd;
+    public function __construct(
+        private string $title,
+        private string $description,
+        private \DateTimeImmutable $dateStart,
+        private \DateTimeImmutable $dateEnd
+    ) {
     }
 
     public function getId(): string
