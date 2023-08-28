@@ -134,7 +134,7 @@ final class IcalReader
             $line = [];
             $values = array_merge(explode(';', trim($matches[2][$i], ';')), explode(';', $matches[3][$i]));
             foreach ($values as $value) {
-                if (false !== strpos($value, '=')) {
+                if (str_contains($value, '=')) {
                     $parts = explode('=', $value);
                     $line['extra'][$parts[0]] = $parts[1];
                 } else {
