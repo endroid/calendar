@@ -4,27 +4,23 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Model;
 
-class CalendarItem
+final class CalendarItem
 {
-    /** @var array<string> */
-    private array $repeatDays = [];
-
-    /** @var array<\DateTimeImmutable> */
-    private array $repeatExceptions = [];
-
-    private int $repeatCount = 0;
-    private \DateInterval|null $repeatInterval = null;
-    private \DateTimeImmutable|null $repeatEndDate = null;
-    private \DateTimeImmutable|null $originalDate = null;
-
-    private string $rawSourceData = '';
-
     public function __construct(
-        private string $id,
-        private string $title,
-        private string $description,
-        private \DateTimeImmutable $dateStart,
-        private \DateTimeImmutable $dateEnd
+        private readonly string $id,
+        private readonly string $title,
+        private readonly string $description,
+        private readonly \DateTimeImmutable $dateStart,
+        private readonly \DateTimeImmutable $dateEnd,
+        /** @var array<string> */
+        private array $repeatDays = [],
+        /** @var array<\DateTimeImmutable> */
+        private array $repeatExceptions = [],
+        private int $repeatCount = 0,
+        private \DateInterval|null $repeatInterval = null,
+        private \DateTimeImmutable|null $repeatEndDate = null,
+        private \DateTimeImmutable|null $originalDate = null,
+        private string $rawSourceData = ''
     ) {
     }
 

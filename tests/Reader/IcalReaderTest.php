@@ -7,7 +7,7 @@ namespace Endroid\Calendar\Tests\Reader\CalendarReaderTest;
 use Endroid\Calendar\Reader\IcalReader;
 use PHPUnit\Framework\TestCase;
 
-class IcalReaderTest extends TestCase
+final class IcalReaderTest extends TestCase
 {
     /**
      * @testdox Recurring events count is correct

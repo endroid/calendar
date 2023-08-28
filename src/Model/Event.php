@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Model;
 
-class Event
+final class Event
 {
     public function __construct(
-        private string $title,
-        private string $description,
-        private \DateTimeImmutable $dateStart,
-        private \DateTimeImmutable $dateEnd
+        private readonly string $title,
+        private readonly string $description,
+        private readonly \DateTimeImmutable $dateStart,
+        private readonly \DateTimeImmutable $dateEnd
     ) {
     }
 

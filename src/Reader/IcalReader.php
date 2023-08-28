@@ -7,10 +7,10 @@ namespace Endroid\Calendar\Reader;
 use Endroid\Calendar\Model\Calendar;
 use Endroid\Calendar\Model\CalendarItem;
 
-class IcalReader
+final class IcalReader
 {
     /** @var array<string, int> */
-    private array $weekDays = [
+    private const WEEK_DAYS = [
         'MO' => 1,
         'TU' => 2,
         'WE' => 3,
@@ -192,7 +192,7 @@ class IcalReader
 
         $days = explode(',', $data['extra']['BYDAY']);
         foreach ($days as &$day) {
-            $day = $this->weekDays[$day];
+            $day = self::WEEK_DAYS[$day];
         }
 
         return $days;

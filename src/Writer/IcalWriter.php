@@ -6,7 +6,7 @@ namespace Endroid\Calendar\Writer;
 
 use Endroid\Calendar\Model\Calendar;
 
-class IcalWriter
+final class IcalWriter
 {
     public function writeToString(Calendar $calendar, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd): string
     {
