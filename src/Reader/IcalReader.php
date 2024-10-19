@@ -7,7 +7,7 @@ namespace Endroid\Calendar\Reader;
 use Endroid\Calendar\Model\Calendar;
 use Endroid\Calendar\Model\CalendarItem;
 
-final class IcalReader
+final readonly class IcalReader
 {
     /** @var array<string, int> */
     private const WEEK_DAYS = [

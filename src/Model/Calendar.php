@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Model;
 
-final class Calendar
+final readonly class Calendar
 {
     public function __construct(
-        private readonly string $title,
+        private string $title,
         /** @var array<CalendarItem> */
-        private readonly array $calendarItems = []
+        private array $calendarItems = [],
     ) {
     }
 

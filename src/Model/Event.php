@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Endroid\Calendar\Model;
 
-final class Event
+final readonly class Event
 {
     public function __construct(
-        private readonly string $title,
-        private readonly string $description,
-        private readonly \DateTimeImmutable $dateStart,
-        private readonly \DateTimeImmutable $dateEnd
+        private string $title,
+        private string $description,
+        private \DateTimeImmutable $dateStart,
+        private \DateTimeImmutable $dateEnd,
     ) {
     }
 
@@ -29,7 +29,7 @@ final class Event
         return $this->description;
     }
 
-    public function getDateStart(\DateTimeZone $timeZone = null): \DateTimeImmutable
+    public function getDateStart(?\DateTimeZone $timeZone = null): \DateTimeImmutable
     {
         if (null == $timeZone) {
             $timeZone = new \DateTimeZone(date_default_timezone_get());
@@ -38,7 +38,7 @@ final class Event
         return $this->dateStart->setTimeZone($timeZone);
     }
 
-    public function getDateEnd(\DateTimeZone $timeZone = null): \DateTimeImmutable
+    public function getDateEnd(?\DateTimeZone $timeZone = null): \DateTimeImmutable
     {
         if (null == $timeZone) {
             $timeZone = new \DateTimeZone(date_default_timezone_get());

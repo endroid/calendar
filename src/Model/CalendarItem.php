@@ -17,10 +17,10 @@ final class CalendarItem
         /** @var array<\DateTimeImmutable> */
         private array $repeatExceptions = [],
         private int $repeatCount = 0,
-        private \DateInterval|null $repeatInterval = null,
-        private \DateTimeImmutable|null $repeatEndDate = null,
-        private \DateTimeImmutable|null $originalDate = null,
-        private string $rawSourceData = ''
+        private ?\DateInterval $repeatInterval = null,
+        private ?\DateTimeImmutable $repeatEndDate = null,
+        private ?\DateTimeImmutable $originalDate = null,
+        private string $rawSourceData = '',
     ) {
     }
 
@@ -34,7 +34,7 @@ final class CalendarItem
         return $this->title;
     }
 
-    public function getDescription(): string|null
+    public function getDescription(): ?string
     {
         return $this->description;
     }
@@ -104,27 +104,27 @@ final class CalendarItem
         $this->repeatInterval = $repeatInterval;
     }
 
-    public function getRepeatInterval(): \DateInterval|null
+    public function getRepeatInterval(): ?\DateInterval
     {
         return $this->repeatInterval;
     }
 
-    public function setRepeatEndDate(\DateTimeImmutable|null $repeatEndDate): void
+    public function setRepeatEndDate(?\DateTimeImmutable $repeatEndDate): void
     {
         $this->repeatEndDate = $repeatEndDate;
     }
 
-    public function getRepeatEndDate(): \DateTimeImmutable|null
+    public function getRepeatEndDate(): ?\DateTimeImmutable
     {
         return $this->repeatEndDate;
     }
 
-    public function setOriginalDate(\DateTimeImmutable|null $originalDate): void
+    public function setOriginalDate(?\DateTimeImmutable $originalDate): void
     {
         $this->originalDate = $originalDate;
     }
 
-    public function getOriginalDate(): \DateTimeImmutable|null
+    public function getOriginalDate(): ?\DateTimeImmutable
     {
         return $this->originalDate;
     }

@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Endroid\Calendar\Tests\Reader\CalendarReaderTest;
 
 use Endroid\Calendar\Reader\IcalReader;
+use PHPUnit\Framework\Attributes\TestDox;
 use PHPUnit\Framework\TestCase;
 
 final class IcalReaderTest extends TestCase
 {
-    /**
-     * @testdox Recurring events count is correct
-     */
+    #[TestDox('Recurring events count is correct')]
     public function testRecurringEventsCount()
     {
         $reader = new IcalReader();
