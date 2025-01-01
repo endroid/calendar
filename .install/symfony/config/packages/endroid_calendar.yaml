@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Endroid\Calendar\Reader\IcalReader: ~
+    Endroid\Calendar\Writer\IcalWriter: ~
