@@ -72,17 +72,6 @@ final class CalendarItem
         $this->repeatExceptions[] = $repeatException;
     }
 
-    public function isRepeatException(\DateTimeImmutable $date): bool
-    {
-        foreach ($this->repeatExceptions as $repeatException) {
-            if ($date == $repeatException) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     /** @return array<\DateTimeImmutable> */
     public function getRepeatExceptions(): array
     {
@@ -155,7 +144,7 @@ final class CalendarItem
                 break;
             }
             foreach ($repeatDates as &$repeatDate) {
-                if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !$this->isRepeatException($repeatDate['start'])) {
+                if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !in_array($repeatDate['start'], $this->repeatExceptions)) {
                     $events[] = new Event($this->title, $this->description, $repeatDate['start'], $repeatDate['end']);
                 }
                 if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd) {
