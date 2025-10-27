@@ -34,7 +34,7 @@ final class CalendarItem
         return $this->title;
     }
 
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
