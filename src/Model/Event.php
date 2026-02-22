@@ -11,8 +11,7 @@ final readonly class Event
         private string $description,
         private \DateTimeImmutable $dateStart,
         private \DateTimeImmutable $dateEnd,
-    ) {
-    }
+    ) {}
 
     public function getId(): string
     {
@@ -31,7 +30,7 @@ final readonly class Event
 
     public function getDateStart(?\DateTimeZone $timeZone = null): \DateTimeImmutable
     {
-        if (null == $timeZone) {
+        if (null === $timeZone) {
             $timeZone = new \DateTimeZone(date_default_timezone_get());
         }
 
@@ -40,7 +39,7 @@ final readonly class Event
 
     public function getDateEnd(?\DateTimeZone $timeZone = null): \DateTimeImmutable
     {
-        if (null == $timeZone) {
+        if (null === $timeZone) {
             $timeZone = new \DateTimeZone(date_default_timezone_get());
         }
 

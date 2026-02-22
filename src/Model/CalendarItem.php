@@ -12,7 +12,7 @@ final class CalendarItem
         private readonly string $description,
         private readonly \DateTimeImmutable $dateStart,
         private readonly \DateTimeImmutable $dateEnd,
-        /** @var array<string> */
+        /** @var array<int|string> */
         private array $repeatDays = [],
         /** @var array<\DateTimeImmutable> */
         private array $repeatExceptions = [],
@@ -21,8 +21,7 @@ final class CalendarItem
         private ?\DateTimeImmutable $repeatEndDate = null,
         private ?\DateTimeImmutable $originalDate = null,
         private string $rawSourceData = '',
-    ) {
-    }
+    ) {}
 
     public function getId(): string
     {
@@ -49,13 +48,13 @@ final class CalendarItem
         return $this->dateEnd;
     }
 
-    /** @param array<string> $repeatDays */
+    /** @param array<int|string> $repeatDays */
     public function setRepeatDays(array $repeatDays): void
     {
         $this->repeatDays = $repeatDays;
     }
 
-    /** @return array<string> */
+    /** @return array<int|string> */
     public function getRepeatDays(): array
     {
         return $this->repeatDays;
@@ -143,22 +142,42 @@ final class CalendarItem
             if ($this->repeatCount > 0 && $count >= $this->repeatCount) {
                 break;
             }
-            foreach ($repeatDates as &$repeatDate) {
-                if ($repeatDate['start'] <= $dateEnd && $repeatDate['end'] >= $dateStart && !in_array($repeatDate['start'], $this->repeatExceptions)) {
+            foreach ($repeatDates as $key => $repeatDate) {
+                if ($this->isInRange($repeatDate, $dateStart, $dateEnd)) {
                     $events[] = new Event($this->title, $this->description, $repeatDate['start'], $repeatDate['end']);
                 }
                 if (!$this->repeatInterval || $repeatDate['start'] > $dateEnd) {
                     break 2;
                 }
-                $repeatDate['start'] = $repeatDate['start']->add($this->repeatInterval);
-                $repeatDate['end'] = $repeatDate['end']->add($this->repeatInterval);
+                $repeatDates[$key]['start'] = $repeatDate['start']->add($this->repeatInterval);
+                $repeatDates[$key]['end'] = $repeatDate['end']->add($this->repeatInterval);
             }
         }
 
         return $events;
     }
 
-    /** @return array<array<\DateTimeImmutable>> */
+    /** @param array{start: \DateTimeImmutable, end: \DateTimeImmutable} $repeatDate */
+    private function isInRange(array $repeatDate, \DateTimeImmutable $dateStart, \DateTimeImmutable $dateEnd): bool
+    {
+        return $repeatDate['start'] <= $dateEnd
+        && $repeatDate['end'] >= $dateStart
+        && !$this->isRepeatException($repeatDate['start']);
+    }
+
+    private function isRepeatException(\DateTimeImmutable $date): bool
+    {
+        $timestamp = $date->getTimestamp();
+        foreach ($this->repeatExceptions as $exception) {
+            if ($exception->getTimestamp() === $timestamp) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @return array<array{start: \DateTimeImmutable, end: \DateTimeImmutable}> */
     public function getRepeatDates(): array
     {
         $repeatDateStart = $this->getDateStart();
@@ -170,7 +189,7 @@ final class CalendarItem
         for ($i = 0; $i < 6; ++$i) {
             $repeatDateStart = $repeatDateStart->add($dayInterval);
             $repeatDateEnd = $repeatDateEnd->add($dayInterval);
-            if (in_array($repeatDateStart->format('w'), $repeatDays)) {
+            if (in_array($repeatDateStart->format('w'), $repeatDays, strict: true)) {
                 $repeatDates[] = ['start' => $repeatDateStart, 'end' => $repeatDateEnd];
             }
         }

@@ -10,8 +10,7 @@ final readonly class Calendar
         private string $title,
         /** @var array<CalendarItem> */
         private array $calendarItems = [],
-    ) {
-    }
+    ) {}
 
     public function getTitle(): string
     {
@@ -32,10 +31,10 @@ final readonly class Calendar
             $events = array_merge($events, $calendarItem->getEvents($dateStart, $dateEnd));
         }
 
-        usort($events, function (Event $a, Event $b) {
+        usort($events, static function (Event $a, Event $b) {
             $diff = strcmp($a->getDateStart()->format('YmdHis'), $b->getDateStart()->format('YmdHis'));
 
-            if (0 == $diff) {
+            if (0 === $diff) {
                 $diff = strcmp($a->getDateEnd()->format('YmdHis'), $b->getDateEnd()->format('YmdHis'));
             }
 
