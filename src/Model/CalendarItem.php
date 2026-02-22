@@ -7,20 +7,20 @@ namespace Endroid\Calendar\Model;
 final class CalendarItem
 {
     public function __construct(
-        private readonly string $id,
-        private readonly string $title,
-        private readonly string $description,
-        private readonly \DateTimeImmutable $dateStart,
-        private readonly \DateTimeImmutable $dateEnd,
+        public private(set) readonly string $id,
+        public private(set) readonly string $title,
+        public private(set) readonly string $description,
+        public private(set) readonly \DateTimeImmutable $dateStart,
+        public private(set) readonly \DateTimeImmutable $dateEnd,
         /** @var array<int|string> */
-        private array $repeatDays = [],
+        public array $repeatDays = [],
         /** @var array<\DateTimeImmutable> */
-        private array $repeatExceptions = [],
-        private int $repeatCount = 0,
-        private ?\DateInterval $repeatInterval = null,
-        private ?\DateTimeImmutable $repeatEndDate = null,
-        private ?\DateTimeImmutable $originalDate = null,
-        private string $rawSourceData = '',
+        public array $repeatExceptions = [],
+        public int $repeatCount = 0,
+        public ?\DateInterval $repeatInterval = null,
+        public ?\DateTimeImmutable $repeatEndDate = null,
+        public ?\DateTimeImmutable $originalDate = null,
+        public string $rawSourceData = '',
     ) {}
 
     public function getId(): string
@@ -168,13 +168,11 @@ final class CalendarItem
     private function isRepeatException(\DateTimeImmutable $date): bool
     {
         $timestamp = $date->getTimestamp();
-        foreach ($this->repeatExceptions as $exception) {
-            if ($exception->getTimestamp() === $timestamp) {
-                return true;
-            }
-        }
 
-        return false;
+        return array_any(
+            $this->repeatExceptions,
+            static fn(\DateTimeImmutable $exception): bool => $exception->getTimestamp() === $timestamp,
+        );
     }
 
     /** @return array<array{start: \DateTimeImmutable, end: \DateTimeImmutable}> */

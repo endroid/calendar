@@ -7,9 +7,9 @@ namespace Endroid\Calendar\Model;
 final readonly class Calendar
 {
     public function __construct(
-        private string $title,
+        public private(set) string $title,
         /** @var array<CalendarItem> */
-        private array $calendarItems = [],
+        public private(set) array $calendarItems = [],
     ) {}
 
     public function getTitle(): string

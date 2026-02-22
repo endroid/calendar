@@ -7,8 +7,8 @@ namespace Endroid\Calendar\Model;
 final readonly class Event
 {
     public function __construct(
-        private string $title,
-        private string $description,
+        public private(set) string $title,
+        public private(set) string $description,
         private \DateTimeImmutable $dateStart,
         private \DateTimeImmutable $dateEnd,
     ) {}
