@@ -89,7 +89,7 @@ final readonly class IcalReader
         }
 
         /** @var array{value?: string, extra?: array<string, string>} $firstEntry */
-        $firstEntry = reset($data);
+        $firstEntry = array_first($data);
 
         if ('MONTHLY' === ($this->getExtra($firstEntry)['FREQ'] ?? null)) {
             // This one is not yet implemented
@@ -122,7 +122,7 @@ final readonly class IcalReader
         }
 
         /** @var array{value?: string, extra?: array<string, string>} $firstEntry */
-        $firstEntry = reset($data);
+        $firstEntry = array_first($data);
         $date = $this->createDate($firstEntry);
         $calendarItem->setOriginalDate($date);
     }
@@ -179,7 +179,7 @@ final readonly class IcalReader
         $data = $this->getData($name, $calendarData);
 
         /** @var array{value?: string, extra?: array<string, string>} $firstEntry */
-        $firstEntry = reset($data);
+        $firstEntry = array_first($data);
 
         return $this->createDate($firstEntry);
     }
