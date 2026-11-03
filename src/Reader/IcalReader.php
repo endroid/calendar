@@ -52,22 +52,22 @@ final readonly class IcalReader
         preg_match_all('#BEGIN:VEVENT.*?END:VEVENT#s', $calendarData, $matches);
 
         $calendarItems = [];
-        $calendarItemDataArray = $matches[0];
+        $calendarItemDataArray = $matches[0] ?? [];
         foreach ($calendarItemDataArray as $calendarItemData) {
             $calendarItems[] = $this->parseCalendarItemData($calendarItemData);
         }
 
         $this->processRevisions($calendarItems);
 
-        return new Calendar(strval($this->getValue('X-WR-CALNAME', $calendarData)), $calendarItems);
+        return new Calendar(strval(IcalDataParser::getValue('X-WR-CALNAME', $calendarData)), $calendarItems);
     }
 
     private function parseCalendarItemData(string $calendarItemData): CalendarItem
     {
         $calendarItem = new CalendarItem(
-            strval($this->getValue('UID', $calendarItemData)),
-            strval($this->getValue('SUMMARY', $calendarItemData)),
-            strval($this->getValue('DESCRIPTION', $calendarItemData)),
+            strval(IcalDataParser::getValue('UID', $calendarItemData)),
+            strval(IcalDataParser::getValue('SUMMARY', $calendarItemData)),
+            strval(IcalDataParser::getValue('DESCRIPTION', $calendarItemData)),
             $this->getDate('DTSTART', $calendarItemData),
             $this->getDate('DTEND', $calendarItemData),
         );
@@ -82,14 +82,12 @@ final readonly class IcalReader
 
     private function setRepeatRule(string $calendarItemData, CalendarItem $calendarItem): void
     {
-        $data = $this->getData('RRULE', $calendarItemData);
+        $data = IcalDataParser::getData('RRULE', $calendarItemData);
+        $firstEntry = array_first($data);
 
-        if (0 === count($data)) {
+        if (null === $firstEntry) {
             return;
         }
-
-        /** @var array{value?: string, extra?: array<string, string>} $firstEntry */
-        $firstEntry = reset($data);
 
         if ('MONTHLY' === ($this->getExtra($firstEntry)['FREQ'] ?? null)) {
             // This one is not yet implemented
@@ -105,7 +103,7 @@ final readonly class IcalReader
 
     private function setRepeatExceptions(string $calendarItemData, CalendarItem $calendarItem): void
     {
-        $data = $this->getData('EXDATE', $calendarItemData);
+        $data = IcalDataParser::getData('EXDATE', $calendarItemData);
 
         foreach ($data as $line) {
             $date = $this->createDate($line);
@@ -115,86 +113,40 @@ final readonly class IcalReader
 
     private function setOriginalDate(string $calendarItemData, CalendarItem $calendarItem): void
     {
-        $data = $this->getData('RECURRENCE-ID', $calendarItemData);
+        $data = IcalDataParser::getData('RECURRENCE-ID', $calendarItemData);
+        $firstEntry = array_first($data);
 
-        if (0 === count($data)) {
+        if (null === $firstEntry) {
             return;
         }
 
-        /** @var array{value?: string, extra?: array<string, string>} $firstEntry */
-        $firstEntry = reset($data);
         $date = $this->createDate($firstEntry);
         $calendarItem->setOriginalDate($date);
     }
 
-    /** @return array<array{value?: string, extra?: array<string, string>}> */
-    private function getData(string $name, string $calendarData): array
-    {
-        $data = [];
-
-        $matches = null;
-        $pattern = '#(' . preg_quote($name, delimiter: '#') . '([^:]*)):([^\\r\\n]*)#';
-        preg_match_all($pattern, $calendarData, $matches);
-
-        $matchCount = count($matches[0]);
-        for ($i = 0; $i < $matchCount; ++$i) {
-            $values = array_merge(explode(';', trim($matches[2][$i], characters: ';')), explode(';', $matches[3][$i]));
-            $data[] = $this->parseLine($values);
-        }
-
-        return $data;
-    }
-
-    /**
-     * @param array<string> $values
-     *
-     * @return array{value?: string, extra?: array<string, string>}
-     */
-    private function parseLine(array $values): array
-    {
-        /** @var array{value?: string, extra?: array<string, string>} $line */
-        $line = [];
-        foreach ($values as $value) {
-            if (str_contains($value, '=')) {
-                $parts = explode('=', $value);
-                $line['extra'][$parts[0]] = $parts[1];
-                continue;
-            }
-
-            $line['value'] = $value;
-        }
-
-        return $line;
-    }
-
-    private function getValue(string $name, string $calendarData): ?string
-    {
-        $data = $this->getData($name, $calendarData);
-
-        return $data[0]['value'] ?? null;
-    }
-
     private function getDate(string $name, string $calendarData): \DateTimeImmutable
     {
-        $data = $this->getData($name, $calendarData);
+        $data = IcalDataParser::getData($name, $calendarData);
+        $firstEntry = array_first($data);
 
-        /** @var array{value?: string, extra?: array<string, string>} $firstEntry */
-        $firstEntry = reset($data);
+        if (null === $firstEntry) {
+            throw new \InvalidArgumentException(sprintf('Missing calendar date "%s"', $name));
+        }
 
         return $this->createDate($firstEntry);
     }
 
     /**
-     * @param array{value?: string, extra?: array<string, string>} $data
+     * @param array{value?: string, extra?: array<int|string, string>} $data
      *
-     * @return array<string, string>
+     * @return array<int|string, string>
      */
     private function getExtra(array $data): array
     {
         return $data['extra'] ?? [];
     }
 
-    /** @param array{value?: string, extra?: array<string, string>} $data */
+    /** @param array{value?: string, extra?: array<int|string, string>} $data */
     private function getRepeatInterval(array $data): ?\DateInterval
     {
         $extra = $this->getExtra($data);
@@ -215,7 +167,7 @@ final readonly class IcalReader
     }
 
     /**
-     * @param array{value?: string, extra?: array<string, string>} $data
+     * @param array{value?: string, extra?: array<int|string, string>} $data
      *
      * @return array<int>
      */
@@ -227,10 +179,16 @@ final readonly class IcalReader
             return [];
         }
 
-        return array_map(static fn(string $day): int => self::WEEK_DAYS[$day], explode(',', $extra['BYDAY']));
+        return array_map(
+            static fn(string $day): int => self::WEEK_DAYS[$day] ?? throw new \InvalidArgumentException(sprintf(
+                'Invalid repeat day "%s"',
+                $day,
+            )),
+            explode(',', $extra['BYDAY']),
+        );
     }
 
-    /** @param array{value?: string, extra?: array<string, string>} $data */
+    /** @param array{value?: string, extra?: array<int|string, string>} $data */
     private function getRepeatCount(array $data): int
     {
         $extra = $this->getExtra($data);
@@ -242,7 +200,7 @@ final readonly class IcalReader
         return intval($extra['COUNT']);
     }
 
-    /** @param array{value?: string, extra?: array<string, string>} $data */
+    /** @param array{value?: string, extra?: array<int|string, string>} $data */
     private function getRepeatEndDate(array $data): ?\DateTimeImmutable
     {
         $extra = $this->getExtra($data);
@@ -254,13 +212,18 @@ final readonly class IcalReader
         return new \DateTimeImmutable($extra['UNTIL']);
     }
 
-    /** @param array{value?: string, extra?: array<string, string>} $data */
+    /** @param array{value?: string, extra?: array<int|string, string>} $data */
     private function createDate(array $data): \DateTimeImmutable
     {
+        $value = $data['value'] ?? '';
+        if ('' === trim($value)) {
+            throw new \InvalidArgumentException('Empty calendar date');
+        }
+
         $extra = $this->getExtra($data);
         $zone = new \DateTimeZone($extra['TZID'] ?? 'UTC');
 
-        return new \DateTimeImmutable($data['value'] ?? '', $zone);
+        return new \DateTimeImmutable($value, $zone);
     }
 
     /** @param array<CalendarItem> $calendarItems */

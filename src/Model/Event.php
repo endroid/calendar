@@ -15,7 +15,7 @@ final readonly class Event
 
     public function getId(): string
     {
-        return sha1(spl_object_hash($this));
+        return sha1((string) spl_object_id($this));
     }
 
     public function getTitle(): string
